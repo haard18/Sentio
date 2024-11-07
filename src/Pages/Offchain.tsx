@@ -8,7 +8,7 @@ import qs from 'qs';
 import { motion } from 'framer-motion';
 import Footer from "../Components/Footer";
 // import { handleTokenTransfer } from "../lib/tokenServices";
-import TransferGif from "../assets/Transfer.gif";
+import TransactionGif from "../assets/Transactiogif2.gif";
 import { handleTokenTransfer } from "../lib/tokenServices";
 import { DotPatternHover } from "../Components/ui/Hoverdots";
 // import { DotPatternHover } from "../Components/ui/Hoverdots";
@@ -285,7 +285,7 @@ const Offchain = () => {
             {/* GIF display logic */}
             {showGif && (
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
-                <img src={TransferGif} alt="Transfer in progress" className="w-[50%] h-auto" />
+                <img src={TransactionGif} alt="Transfer in progress" className="w-[50%] h-auto" />
               </div>
             )}
 
