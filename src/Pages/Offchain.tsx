@@ -220,31 +220,34 @@ const Offchain = () => {
     <>
       {/* <DotPatternHover> */}
       <div className="app-background min-h-screen w-full flex flex-col items-center">
-        <Navbar />
+        <div className="flex w-full justify-center mt-5">
+
+          <Navbar />
+        </div>
 
 
-       
+
 
         <DotPatternHover>
-        <motion.div
-          className="flex flex-col justify-center items-center text-center mb-16 mt-24"
-          initial="hidden"
-          animate="visible"
-        variants={textVariant}
-        >
+          <motion.div
+            className="flex flex-col justify-center items-center text-center mb-16 mt-24"
+            initial="hidden"
+            animate="visible"
+            variants={textVariant}
+          >
 
-          <p className="text-white text-2xl md:text-5xl font-extralight mt-2 md:mt-4" style={{ fontFamily: "'Roboto'" }}>
-            With Code Audits, you need to be sure that your code <br />is secure and free from vulnerabilities
-            <motion.span
-              className="inline-block px-2 py-1 font-extrabold text-[#9966ff] rounded-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, ease: [0.43, 0.13, 0.23, 0.96], delay: 0.3 }}
-            >
-              before deployment.
-            </motion.span>
-          </p>
-        </motion.div>
+            <p className="text-white text-2xl md:text-5xl font-extralight mt-2 md:mt-4" style={{ fontFamily: "'Roboto'" }}>
+              With Code Audits, you need to be sure that your code <br />is secure and free from vulnerabilities
+              <motion.span
+                className="inline-block px-2 py-1 font-extrabold text-[#9966ff] rounded-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, ease: [0.43, 0.13, 0.23, 0.96], delay: 0.3 }}
+              >
+                before deployment.
+              </motion.span>
+            </p>
+          </motion.div>
           <div className="flex p-10 w-full justify-center flex-col items-center">
             {showProgress && !report ? (
               <div className="relative w-full">

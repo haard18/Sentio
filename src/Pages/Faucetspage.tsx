@@ -6,7 +6,7 @@ import Wallet from '../Components/Wallet-Button';
 import { useEffect, useState } from 'react';
 import { useActiveAddress } from 'arweave-wallet-kit';
 import { handleAirDrop } from '../lib/tokenServices';
-// import AirdropGif from "../assets/Airdropping.gif";
+import AirdropGif from "../assets/Airdropping.gif";
 
 const Faucetspage = () => {
   const address = useActiveAddress();
@@ -41,126 +41,72 @@ const Faucetspage = () => {
   };
 
   const handleAirDropWithBalanceUpdate = async (walletAddress: string) => {
-    setLoading(true); // Start loading
+    setLoading(true); // Start loading and show the GIF
     await handleAirDrop(walletAddress, window.arweaveWallet);
     setTimeout(() => {
       getTokenBalance();
-      setLoading(false); // Stop loading after 5 seconds
+      setLoading(false); // Stop loading after 3 seconds
     }, 3000);
   };
-
   return (
-   <div className='app-background w-full h-screen flex flex-col items-center
-     gap-8 space-y-8 '>
+    <div className='app-background w-full h-screen flex flex-col items-center
+     gap-8 space-y-8 ' style={{ fontFamily: "'Amaranth'" }}>
 
 
       <Navbar />
       <DotPatternHover>
-        <div className='flex flex-col items-center text-center px-4 py-10 rounded-lg bg-gray-800 '>
-          <h1>tSenti Faucet</h1>
-          <p className="text-lg text-[#cfd8e0] max-w-lg mb-6">
-            Claim tSENTI tokens from the faucet to get started with code auditing, monitoring, and complete security.
-          </p>
-          <motion.button
-            className="text-[#0e1116] py-2 px-6 text-lg rounded-md mb-6 transition"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Wallet />
-          </motion.button>
-          <div className='text-left'>
+        <div className='w-full flex justify-center'>
+          <div className='flex flex-col items-center text-center px-4 py-10 rounded-xl border    '>
+            <h1>tSenti Faucet</h1>
+            <p className="text-lg text-[#cfd8e0] max-w-lg mb-6">
+              Claim tSENTI tokens from the faucet to get started with code auditing, monitoring, and complete security.
+            </p>
+            <motion.button
+              className="text-[#0e1116] py-2 px-6 text-lg rounded-md mb-6 transition"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Wallet />
+            </motion.button>
+            <div className='text-left'>
 
-            <p className="text-lg">
-              Please connect wallet to get <span className="text-[#9966ff]">tSENTI Tokens</span>
-            </p>
-            <p>
-              Your Wallet Address: <span className="text-[#9966ff]">{walletAddress}</span>
-            </p>
-            <p>
-              Your Test Senti Balance: <span className="text-[#9966ff]">{testSentiBalance}</span>
-            </p>
-            {walletAddress &&
-              <div className='flex justify-end px-5'>
-                <button
-                  onClick={() => handleAirDropWithBalanceUpdate(walletAddress)}
-                  className='bg-[#9966ff] text-black px-5 py-2 rounded-lg'
-                  disabled={!walletAddress}
-                >
-                  Claim tSENTI
-                </button>
+              <p className="text-lg">
+                Please connect wallet to get <span className="text-white">tSENTI Tokens</span>
+              </p>
+              <p>
+                Your Wallet Address: <span className="text-white">{walletAddress}</span>
+              </p>
+              <p>
+                Your Test Senti Balance: <span className="text-white">{testSentiBalance}</span>
+              </p>
+              {walletAddress &&
+                <div className='flex justify-end px-5'>
+                  <button
+                    onClick={() => handleAirDropWithBalanceUpdate(walletAddress)}
+                    className='gradient-button text-white px-5 py-2 rounded-xl'
+                    disabled={!walletAddress}
+                  >
+                    Claim tSENTI
+                  </button>
 
-              </div>}
+                </div>}
+              {loading && (
+                <div className="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-70">
+                  <img src={AirdropGif} alt="Airdropping" className="w-90 h-90" />
+                </div>
+              )}
+
+            </div>
           </div>
         </div>
-      <Footer />
+        <div className='flex bottom-0 right-0 left-0 fixed'>
+
+          <Footer />
+        </div>
       </DotPatternHover>
 
 
     </div>
   )
-  // return (
-  //   <>
-  //     <div className='app-background h-screen w-full flex flex-col items-center justify-center gap-9'>
-
-  //       <motion.div
-  //         className=""
-  //         initial={{ opacity: 0 }}
-  //         animate={{ opacity: 1 }}
-  //         transition={{ duration: 0.8 }}
-  //       >
-  //         <Navbar />
-
-  //         <DotPatternHover>
-  //           <motion.div
-  //             className="flex flex-col items-center text-center px-4 py-10 bg-[rgba(14,17,22,0.85)] rounded-lg shadow-md backdrop-blur-md"
-  //             initial={{ scale: 0.9 }}
-  //             animate={{ scale: 1 }}
-  //             transition={{ duration: 0.5 }}
-  //             whileHover={{ scale: 1.05 }}
-  //           >
-  //             <h1 className="text-4xl text-[#9966ff] mb-4">tSENTI Faucet</h1>
-
-  //             <p className="text-lg text-[#cfd8e0] max-w-lg mb-6">
-  //               Claim tSENTI tokens from the faucet to get started with code auditing, monitoring, and complete security.
-  //             </p>
-
-  //             <motion.button
-  //               className="text-[#0e1116] py-2 px-6 text-lg rounded-md mb-6 transition"
-  //               whileHover={{ scale: 1.05 }}
-  //             >
-  //               <Wallet />
-  //             </motion.button>
-  //             <div className='text-left'>
-
-  //               <p className="text-lg">
-  //                 Please connect wallet to get <span className="text-[#9966ff]">tSENTI Tokens</span>
-  //               </p>
-  //               <p>
-  //                 Your Wallet Address: <span className="text-[#9966ff]">{walletAddress}</span>
-  //               </p>
-  //               <p>
-  //                 Your Test Senti Balance: <span className="text-[#9966ff]">{testSentiBalance}</span>
-  //               </p>
-  //               {walletAddress &&
-  //                 <div className='flex justify-end px-5'>
-  //                   <button
-  //                     onClick={() => handleAirDropWithBalanceUpdate(walletAddress)}
-  //                     className='bg-[#9966ff] text-black px-5 py-2 rounded-lg'
-  //                     disabled={!walletAddress}
-  //                   >
-  //                     Claim tSENTI
-  //                   </button>
-
-  //                 </div>}
-  //             </div>
-  //           </motion.div>
-  //         </DotPatternHover>
-
-  //         <Footer />
-  //       </motion.div>
-  //     </div>
-
-
-
 };
 
 export default Faucetspage;

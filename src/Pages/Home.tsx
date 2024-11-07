@@ -120,7 +120,7 @@ const Home: React.FC = () => {
               variants={buttonVariant}
             >
               <button
-                className="px-10 py-3 text-white purple-gradient-button mt-7 z-10 rounded-xl font-bold text-lg"
+                className="px-10 py-3 text-white gradient-button  mt-7 z-10 rounded-xl font-bold text-lg"
                 onClick={scrollToFeatures}
               >
                 Get Started
@@ -151,14 +151,14 @@ const Home: React.FC = () => {
               <div className='flex justify-center gap-9'>
                 <div className="flex justify-center gap-9">
                   <button
-                    className="purple-gradient-button mt-4 px-4 py-2 rounded-xl"
+                    className="gradient-button  mt-4 px-4 py-2 rounded-xl"
                     onClick={() => setShowPostModal(true)}
                   >
                     Post Deployment
                   </button>
 
                   <button
-                    className="purple-gradient-button mt-4 px-4 py-2 rounded-xl"
+                    className="gradient-button  mt-4 px-4 py-2 rounded-xl"
                     onClick={() => setShowPreModal(true)}
                   >
                     Pre Deployment
@@ -174,7 +174,7 @@ const Home: React.FC = () => {
                         </p>
                         <div className="flex justify-center gap-6">
                           <button
-                            className="purple-gradient-button px-6 py-3 rounded-lg text-lg font-medium"
+                            className="gradient-button  px-6 py-3 rounded-lg text-lg font-medium"
                             onClick={goToonchain}
                           >
                             Proceed
@@ -200,7 +200,7 @@ const Home: React.FC = () => {
                         </p>
                         <div className="flex justify-center gap-6">
                           <button
-                            className="purple-gradient-button px-6 py-3 rounded-lg text-lg font-medium"
+                            className="gradient-button  px-6 py-3 rounded-lg text-lg font-medium"
                             onClick={goTooffchain}
                           >
                             Proceed
