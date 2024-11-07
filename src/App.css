@@ -1,5 +1,5 @@
 .app-background {
-  background: linear-gradient(195deg, #080708 , #1a0842 100%);
+  background: linear-gradient(195deg, #080708 , #340e51 100%);
   /* background: #090708; */
   overflow: auto;
 }
@@ -16,7 +16,7 @@
 }
 
 .CodeMirror.cm-s-dracula {
-  border: 2px solid #2c2c2c;
+  border: 2px solid #2c2c2c;  
   /* Adjust the border color as needed */
   border-radius: 12px;
   /* Add rounded corners */
