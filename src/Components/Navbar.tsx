@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Wallet from "./Wallet-Button";
-import logo from "../assets/logo.png";
+import logo from "../assets/s.svg";
 import { motion } from "framer-motion";
 import {  FaTimes } from "react-icons/fa";
 
@@ -88,7 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ faqRef, howItWorksRef, switchNetRef }) 
             {/* Logo */}
             <div className="flex items-center">
                 <div className="w-12">
-                    <img src={logo} alt="Logo" />
+                    <img src={logo} alt="Logo" className="rounded-full" />
                 </div>
                 <p className="hidden lg:block ml-2 cursor-pointer" onClick={navigateToHome}>
                     SENTIO

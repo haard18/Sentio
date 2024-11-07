@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/s.svg";
 import { FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
@@ -14,7 +14,7 @@ const Footer = () => {
                 {/* Logo and Name Side by Side */}
                 <div className="flex flex-col items-center lg:items-start">
                     <div className="flex items-center">
-                        <img src={logo} alt="SENTIO Logo" className="w-12" />
+                        <img src={logo} alt="SENTIO Logo" className="w-12 rounded-full" />
                         <p className="ml-2 cursor-pointer" onClick={() => navigate("/")}>
                             SENTIO
                         </p>
