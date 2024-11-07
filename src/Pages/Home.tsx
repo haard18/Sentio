@@ -150,12 +150,6 @@ const Home: React.FC = () => {
               </div>
               <div className='flex justify-center gap-9'>
                 <div className="flex justify-center gap-9">
-                  <button
-                    className="gradient-button  mt-4 px-4 py-2 rounded-xl"
-                    onClick={() => setShowPostModal(true)}
-                  >
-                    Post Deployment
-                  </button>
 
                   <button
                     className="gradient-button  mt-4 px-4 py-2 rounded-xl"
@@ -163,6 +157,13 @@ const Home: React.FC = () => {
                   >
                     Pre Deployment
                   </button>
+                  <button
+                    className="gradient-button  mt-4 px-4 py-2 rounded-xl"
+                    onClick={() => setShowPostModal(true)}
+                  >
+                    Post Deployment
+                  </button>
+
 
                   {/* Modal for Post Deployment */}
                   {showPostModal && (
