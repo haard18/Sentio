@@ -99,7 +99,7 @@ const Home: React.FC = () => {
           >
 
             <p className="text-white text-2xl md:text-5xl font-extralight mt-2 md:mt-4" style={{ fontFamily: "'Amarant'" }}>
-              Enter an End To End Pipeline with <br /> Security, analysis and{" "}
+              Enter an End To End Pipeline with <br /> Security, Analysis and{" "}
               <motion.span
                 className="inline-block px-2 py-1 font-extrabold text-[#9966ff] rounded-lg"
                 initial={{ opacity: 0 }}

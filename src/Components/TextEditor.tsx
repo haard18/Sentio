@@ -3,14 +3,24 @@ import { Controlled as ControlledEditor } from 'react-codemirror2';
 import 'codemirror/mode/lua/lua'; // Import Lua mode
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/dracula.css';  // Optional: import a theme
-
+import ReactGA from 'react-ga4';
 const CodeEditor: React.FC<{ value: string, onChange: (value: string) => void, onAnalyze: () => void }> = ({ value, onChange, onAnalyze }) => {
     const [language] = useState('lua'); // Only Lua language available
 
     if (language !== 'lua') {
         throw new Error('Invalid language');
     }
-
+    const handleAnalyze=()=>{
+        ReactGA.send({
+            hitType: 'event',
+            eventCategory: 'Code Analysis',
+            eventAction: 'Analyze Button Clicked',
+            eventLabel: 'AuditRequests'
+        });
+        
+        // Call the provided onAnalyze function
+        onAnalyze();
+    }
     return (
         <div
             className="items-center justify-center rounded-xl shadow-md max-w-4xl w-full"
@@ -34,7 +44,7 @@ const CodeEditor: React.FC<{ value: string, onChange: (value: string) => void, o
             >
                 <h2 className="text-xl font-bold">SENTIO ANALYSIS</h2>
                 <button
-                    onClick={onAnalyze}
+                    onClick={handleAnalyze}
                     className="gradient-button rounded-xl p-1 px-5 text-white font-semibold hover:bg-black"
                 >
                     Analyze
