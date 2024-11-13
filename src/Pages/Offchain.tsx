@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import CodeEditor from "../Components/TextEditor";
-import ReportCard, { ReportItem } from "../Components/ReportCard";
+import ReportCard, { Report } from "../Components/ReportCard";
 import axios from 'axios';
 import qs from 'qs';
 import { motion } from 'framer-motion';
@@ -22,7 +22,7 @@ interface Repository {
 const Offchain = () => {
   const [showGif, setShowGif] = useState(false);
   const [code, setCode] = useState('');
-  const [report, setReport] = useState<null | ReportItem[]>(null);
+  const [report, setReport] = useState<null | Report>(null);
   const [showProgress, setShowProgress] = useState(false);
   const [progressText, setProgressText] = useState('');
   const [progress, setProgress] = useState(0);
@@ -77,11 +77,13 @@ const Offchain = () => {
 
     try {
       const response = await axios.post('https://sam-offchain-dbedazdhd2dugrdk.eastus-01.azurewebsites.net/analyze',
+      // const response = await axios.post('http://127.0.0.1:5000/analyze',
         qs.stringify({ code }), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
+      console.log()
       setReport(response.data);
     } catch (error) {
       console.error('Error analyzing code:', error);

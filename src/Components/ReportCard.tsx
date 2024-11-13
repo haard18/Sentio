@@ -1,12 +1,8 @@
 import React from 'react';
+import { FaCode, FaBug, FaSkull, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { FaExclamationTriangle, FaCheckCircle, FaBug, FaSkull, FaCode } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-export interface ReportItem {
+interface Vulnerability {
   description: string;
   line: number;
   name: string;
@@ -14,7 +10,13 @@ export interface ReportItem {
   severity: string;
 }
 
-export interface ReportStats {
+export interface Report {
+  total_lines: number;
+  vulnerabilities: Vulnerability[];
+  vulnerable_lines: number;
+}
+
+interface ReportStats {
   highSeverity: number;
   mediumSeverity: number;
   lowSeverity: number;
@@ -25,101 +27,78 @@ export interface ReportStats {
 }
 
 interface ReportCardProps {
-  report: ReportItem[];
+  report: Report;
   onGoBack: () => void;
 }
 
-const computeReportStats = (report: ReportItem[]): ReportStats => {
-  const highSeverityItems = report.filter(item => item.severity.toLowerCase() === 'high');
-  const mediumSeverityItems = report.filter(item => item.severity.toLowerCase() === 'medium');
-  const lowSeverityItems = report.filter(item => item.severity.toLowerCase() === 'low');
+const computeReportStats = (report: Report): ReportStats => {
+  const vulnerabilities = report.vulnerabilities;
 
-  const highSeverity = highSeverityItems.length;
-  const mediumSeverity = mediumSeverityItems.length;
-  const lowSeverity = lowSeverityItems.length;
+  // Filter vulnerabilities by severity
+  const highSeverityItems = vulnerabilities.filter(item => item.severity.toLowerCase() === 'high');
+  const mediumSeverityItems = vulnerabilities.filter(item => item.severity.toLowerCase() === 'medium');
+  const lowSeverityItems = vulnerabilities.filter(item => item.severity.toLowerCase() === 'low');
 
-  const totalLinesOfCode = Math.max(...report.map(item => item.line), 0);
-  const uniqueVulnerableLines = new Set(report.map(item => item.line)).size;
+  // Calculate total lines of code and unique vulnerable lines
+  const totalLinesOfCode = report.total_lines || 0;
+  const uniqueVulnerableLines = report.vulnerable_lines || 0;
   const vulnerableCodePercentage = totalLinesOfCode
     ? ((uniqueVulnerableLines / totalLinesOfCode) * 100).toFixed(2)
     : '0';
 
   const threatChecklist = [
-    { label: 'Does the code allow reentrancy?', exists: report.some(item => item.name.toLowerCase() === 'reentrancy') },
-    { label: 'Is there a floating pragma issue?', exists: report.some(item => item.name.toLowerCase() === 'floating pragma') },
-    { label: 'Are there unchecked external calls?', exists: report.some(item => item.name.toLowerCase() === 'unchecked external calls') },
-    { label: 'Does the code have integer overflow or underflow vulnerabilities?', exists: report.some(item => ['integer overflow', 'integer underflow'].includes(item.name.toLowerCase())) },
-    { label: 'Is there a denial of service vulnerability?', exists: report.some(item => item.name.toLowerCase() === 'denial of service') },
+    { label: 'Does the code allow reentrancy?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'reentrancy') },
+    { label: 'Is there a floating pragma issue?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'floating pragma') },
+    { label: 'Are there unchecked external calls?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'unchecked external calls') },
+    { label: 'Does the code have integer overflow or underflow vulnerabilities?', exists: vulnerabilities.some(vul => ['integer overflow', 'integer underflow'].includes(vul.name.toLowerCase())) },
+    { label: 'Is there a denial of service vulnerability?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'denial of service') },
   ];
 
   return {
-    highSeverity,
-    mediumSeverity,
-    lowSeverity,
+    highSeverity: highSeverityItems.length,
+    mediumSeverity: mediumSeverityItems.length,
+    lowSeverity: lowSeverityItems.length,
     totalLinesOfCode,
     uniqueVulnerableLines,
     vulnerableCodePercentage,
     threatChecklist,
   };
-
 };
 
 const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
-  const navigate = useNavigate();
   const reportStats = computeReportStats(report);
-  console.log(reportStats);
-  const { highSeverity, mediumSeverity, lowSeverity, totalLinesOfCode, uniqueVulnerableLines, vulnerableCodePercentage, threatChecklist } = reportStats;
+  const { 
+    highSeverity, 
+    mediumSeverity, 
+    lowSeverity, 
+    totalLinesOfCode, 
+    uniqueVulnerableLines, 
+    vulnerableCodePercentage, 
+    threatChecklist
+  } = reportStats;
 
-  let summaryText = '';
-  if (highSeverity > 0 && mediumSeverity > 0 && lowSeverity > 0) {
-    summaryText = 'Your code contains critical vulnerabilities, and it is recommended to rewrite the logic entirely.';
-  } else if (highSeverity === 0 && mediumSeverity > 0) {
-    summaryText = 'Your code is apt for production after proper refactoring.';
-  } else if (highSeverity === 0 && mediumSeverity === 0 && lowSeverity > 0) {
-    summaryText = 'Your code is okay for testing with alpha users.';
-  } else if (highSeverity === 0 && mediumSeverity === 0 && lowSeverity === 0) {
-    summaryText = 'Your code is production ready.';
-  }
-
+  // Dummy Doughnut Chart Data (Replace with actual data)
   const data = {
     labels: ['High', 'Medium', 'Low'],
-    datasets: [
-      {
-        label: '# of Vulnerabilities',
-        data: [highSeverity, mediumSeverity, lowSeverity],
-        backgroundColor: ['#FF0000', '#ffcc00', 'green'],
-        hoverBackgroundColor: ['#FF0000', '#ffcc00', '#36a2eb'],
-        cutout: '70%',
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const goToReportDetails = () => {
-    navigate('/report-details', { state: { report } });
-  };
-
-  const goToCertifications = () => {
-    navigate('/certificates', { state: { report, reportStats } });
+    datasets: [{
+      data: [highSeverity, mediumSeverity, lowSeverity],
+      backgroundColor: ['#f87171', '#fbbf24', '#34d399'],
+    }]
   };
 
   return (
-    <div className="min-h-1/2 flex flex-col justify-between bg-[#1E1E1E] text-white p-4 rounded-lg shadow-lg" style={{ fontFamily: "'Roboto'" }}>
+    <div className="min-h-[50vh] flex flex-col justify-between bg-[#1E1E1E] text-white p-6 rounded-xl shadow-lg" style={{ fontFamily: "'Roboto'" }}>
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Summary + Security Assessment</h2>
-          <button className="bg-[#3b3f5c] text-sm px-4 py-2 rounded-lg" onClick={onGoBack}>
+          <button className="bg-[#3b3f5c] gradient-button text-sm px-4 py-2 rounded-xl" onClick={onGoBack}>
             Go Back
           </button>
         </div>
-        <p className="mb-4 text-gray-300" style={{ fontFamily: "'Roboto'" }}>
-          {summaryText}
-        </p>
-
-        {/* Doughnut chart and analysis summary */}
+        
+        {/* Code Analysis Summary */}
         <div className="flex flex-col sm:flex-row sm:space-x-4 mb-4">
-          {/* Code Analysis Summary */}
-          <div className="flex-1 bg-[#2E2E2E] p-4 rounded-lg shadow-md mb-4 sm:mb-0">
+          <div className="flex-1 bg-[#2E2E2E] p-4 rounded-xl shadow-md mb-4 sm:mb-0">
             <h3 className="text-xl font-semibold mb-2">Code Analysis Summary</h3>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
@@ -144,28 +123,28 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
           </div>
 
           {/* Vulnerabilities Discovered */}
-          <div className="flex-1 bg-[#2E2E2E] p-4 rounded-lg shadow-md">
+          <div className="flex-1 bg-[#2E2E2E] p-4 rounded-xl shadow-md">
             <h3 className="text-xl font-semibold mb-2">Vulnerabilities Discovered</h3>
-            <div className="flex flex-col items-center sm:flex-row sm:items-start">
+            <div className="flex flex-col sm:flex-row sm:space-x-4 items-center sm:items-start">
               <div className="w-full sm:w-1/2">
                 <Doughnut data={data} />
               </div>
               <div className="w-full sm:w-1/2 sm:ml-4 space-y-2">
                 <div className="flex items-center space-x-2">
                   <FaSkull className="text-red-500" />
-                  <div className="bg-red-500 text-white px-2 py-1 rounded-lg">
+                  <div className="bg-red-500 text-white px-2 py-1 rounded-xl">
                     {highSeverity} High
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <FaExclamationTriangle className="text-yellow-500" />
-                  <div className="bg-yellow-500 text-white px-2 py-1 rounded-lg">
+                  <div className="bg-yellow-500 text-white px-2 py-1 rounded-xl">
                     {mediumSeverity} Medium
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <FaCheckCircle className="text-green-500" />
-                  <div className="bg-green-500 text-white px-2 py-1 rounded-lg">
+                  <div className="bg-green-500 text-white px-2 py-1 rounded-xl">
                     {lowSeverity} Low
                   </div>
                 </div>
@@ -175,8 +154,8 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
         </div>
 
         {/* Threat Model */}
-        <div className="bg-[#2E2E2E] p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-2 bg-slate-700 px-4 py-1 rounded-lg">Generated Threat Model</h3>
+        <div className="bg-[#2E2E2E] p-4 rounded-xl shadow-md">
+          <h3 className="text-xl font-semibold mb-2 bg-slate-700 px-4 py-1 rounded-xl">Generated Threat Model</h3>
           <ul className="text-gray-300 text-sm pl-5">
             {threatChecklist.map((check, index) => (
               <li key={index}>
@@ -193,11 +172,11 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-4 flex space-x-2">
-        <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={goToReportDetails}>
+      <div className="mt-6 flex space-x-4">
+        <button className="bg-green-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-green-600 transition duration-300" onClick={() => console.log('View Details')}>
           View Details
         </button>
-        <button className="bg-purple-500 text-white px-4 py-2 rounded-lg" onClick={goToCertifications}>
+        <button className="bg-purple-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-purple-600 transition duration-300" onClick={() => console.log('Get Certification')}>
           Get Security Certification
         </button>
       </div>

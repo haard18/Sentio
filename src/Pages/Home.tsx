@@ -86,7 +86,10 @@ const Home: React.FC = () => {
     <>
 
       <div className="app-background min-h-screen flex flex-col justify-center items-center overflow-hidden">
-        <Navbar faqRef={faqRef} howItWorksRef={howItWorksRef} switchNetRef={switchNetRef} />
+        <div className='w-full justify-center flex mt-5' >
+
+          <Navbar faqRef={faqRef} howItWorksRef={howItWorksRef} switchNetRef={switchNetRef} />
+        </div>
         <DotPatternHover>
           {/* Pass refs to Navbar */}
 
