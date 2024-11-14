@@ -7,7 +7,7 @@ const Wallet = () => {
 
 
     return (
-        <div className='border border-[#757373] gradient-button rounded-xl p-1'>
+        <div className='inline-flex items-center justify-center gap-2 whitespace-nowrap  text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-zinc-300 rounded-xl'>
             <ConnectButton
                 accent="rgb(63, 63, 63 ,0)"
                 profileModal={false}

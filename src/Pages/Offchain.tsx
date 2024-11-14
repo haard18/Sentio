@@ -10,7 +10,7 @@ import Footer from "../Components/Footer";
 // import { handleTokenTransfer } from "../lib/tokenServices";
 import TransactionGif from "../assets/Transactiogif2.gif";
 import { handleTokenTransfer } from "../lib/tokenServices";
-import { DotPatternHover } from "../Components/ui/Hoverdots";
+// import { DotPatternHover } from "../Components/ui/Hoverdots";
 // import { DotPatternHover } from "../Components/ui/Hoverdots";
 
 interface Repository {
@@ -77,7 +77,7 @@ const Offchain = () => {
 
     try {
       const response = await axios.post('https://sam-offchain-dbedazdhd2dugrdk.eastus-01.azurewebsites.net/analyze',
-      // const response = await axios.post('http://127.0.0.1:5000/analyze',
+        // const response = await axios.post('http://127.0.0.1:5000/analyze',
         qs.stringify({ code }), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -221,16 +221,15 @@ const Offchain = () => {
   return (
     <>
       {/* <DotPatternHover> */}
+      <Navbar />
       <div className="app-background min-h-screen w-full flex flex-col items-center">
-        <div className="flex w-full justify-center mt-5">
-
-          <Navbar />
-        </div>
 
 
 
 
-        <DotPatternHover>
+
+
+        {/* <DotPatternHover> */}
           <motion.div
             className="flex flex-col justify-center items-center text-center mb-16 mt-24"
             initial="hidden"
@@ -363,7 +362,7 @@ const Offchain = () => {
               Import from GitHub
             </button>}
           </div>
-        </DotPatternHover>
+        {/* </DotPatternHover> */}
       </div >
       <div className="">
 

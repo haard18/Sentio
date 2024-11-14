@@ -1,6 +1,6 @@
 import { useActiveAddress } from "arweave-wallet-kit";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import ProcessCard from "../Components/ProcessCard";
 import "../index.css"
@@ -49,13 +49,11 @@ const Onchain = () => {
             fetchProcesses();
         }
     }, [address, navigate]);
-    const faqRef = useRef<HTMLDivElement | null>(null);  // Create ref for FAQ section
-    const howItWorksRef = useRef<HTMLDivElement | null>(null); // Create ref for "How it works"
-
+   
     return (
         <>
             <div className="app-background flex-grow min-h-screen flex flex-col">
-                <Navbar faqRef={faqRef} howItWorksRef={howItWorksRef} />
+                <Navbar />
 
                 <div className="flex justify-center items-center py-3">
                     <h1 className="text-white font-bold text-center text-3xl tracking-widest" style={{ fontFamily: "'Roboto'" }}>

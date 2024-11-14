@@ -87,7 +87,7 @@ export default function Dashboard() {
     <div className="app-background text-white min-h-screen" style={{ fontFamily: "'Roboto'" }}>
 
       <div className="flex justify-center">
-        <Navbar faqRef={undefined} howItWorksRef={undefined} />
+        <Navbar />
       </div>
       <DotPatternHover>
         <div className="flex justify-center mb-4 mt-5">

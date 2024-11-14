@@ -45,14 +45,13 @@ const SentinelProcess = () => {
     hidden: { pathLength: 0 },
     visible: { pathLength: 1, transition: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' } },
   };
-  const faqRef = useRef<HTMLDivElement | null>(null);  // Create ref for FAQ section
-  const howItWorksRef = useRef<HTMLDivElement | null>(null); // Create ref for "How it works"
+ 
   return (
     <>
       <div className="app-background min-h-screen flex flex-col bg-[#1a1a1a] text-white" style={{ fontFamily: "'Roboto'" }}>
 
 
-        <Navbar faqRef={faqRef} howItWorksRef={howItWorksRef} />
+        <Navbar/>
 
         <div
           className="sentinel-setup p-6 rounded-lg  w-full max-w-3xl mx-auto flex-grow mt-12"
