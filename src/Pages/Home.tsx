@@ -3,26 +3,17 @@
 import { Button } from "./../Components/ui/button"
 import { Activity, Database } from "lucide-react"
 // import Image from "next/image"
-import { useState, useEffect, useRef } from "react"
-import AccordionComp from "../Components/Accordion"
+import { useRef } from "react"
+// import AccordionComp from "../Components/Accordion"
 import Navbar from "../Components/Navbar"
 import Footer from "../Components/Footer"
+// import FAQ from "../Components/Accordion"
+import FAQSection from "../Components/FAQ"
 
 export default function Component() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const howItWorksRef = useRef<HTMLDivElement | null>(null); // Create ref for "How it works"
 
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setMousePosition({ x: event.clientX, y: event.clientY })
-    }
 
-    window.addEventListener('mousemove', handleMouseMove)
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [])
 
   return (
     <div className="min-h-screen app-background text-white relative overflow-hidden">
@@ -31,18 +22,14 @@ export default function Component() {
         <div
           className="w-full h-full"
           style={{
-            backgroundImage: `radial-gradient(circle 8px at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.15) 0%, transparent 60%)`,
+
             backgroundSize: '40px 40px',
             backgroundPosition: '0 0, 20px 20px',
             backgroundRepeat: 'repeat',
             transition: 'background 0.3s ease',
           }}
         >
-          <div className="w-full h-full" style={{
-            backgroundImage: 'radial-gradient(circle 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0)',
-            backgroundSize: '40px 40px',
-            backgroundPosition: '0 0, 20px 20px',
-          }} />
+
         </div>
       </div>
       <Navbar />
@@ -58,7 +45,7 @@ export default function Component() {
           </div>
 
           {/* Hero Content */}
-          <div className="text-center max-w-4xl mx-auto">
+          <div className="text-center z-10 max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8">
               Enter an End to End Pipeline with Security, Audit and Monitoring
             </h1>
@@ -67,18 +54,18 @@ export default function Component() {
               real-time alerts, and comprehensive reporting—so you always stay protected.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Button 
+              <Button
                 className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg"
-                onClick={() => window.location.href = '/dashboard'}
-                >
-                Start monitoring
-                </Button>
-              <Button 
-                className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg"
-                onClick={() => window.location.href = 'https://docs_sentio-app.ar-io.dev/'}
               >
-                Learn More
+                <a href="/dashboard" className="w-full h-full flex items-center justify-center">Start monitoring</a>
               </Button>
+
+              <Button
+                className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg"
+              >
+                <a href="https://docs_sentio-app.ar-io.dev/" className="w-full h-full flex items-center justify-center">Learn More</a>
+              </Button>
+
             </div>
           </div>
 
@@ -125,8 +112,9 @@ export default function Component() {
         </div>
 
         {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-transparent opacity-30" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-transparent opacity-30 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent pointer-events-none" />
+
       </div>
 
       {/* Solutions Section */}
@@ -174,53 +162,20 @@ export default function Component() {
         </div>
       </section>
 
-      <AccordionComp />
-      <Footer/>
+      {/* <AccordionComp />
+       */}
+      <section className="py-24 relative">
 
+        <FAQSection />
+      </section>
       
-      {/* <footer className="border-t border-white/10 bg-black/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-sm font-semibold mb-4">Product</h3>
-              <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-white">Features</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Security</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Pricing</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-4">Company</h3>
-              <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-white">About</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-4">Resources</h3>
-              <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-white">Documentation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Help Center</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold mb-4">Legal</h3>
-              <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-white">Privacy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Terms</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Security</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-white/10">
-            <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} Sentio. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer> */}
+      <section className=" relative">
+
+        <Footer/>
+      </section>
+
+
+
     </div>
   )
 }

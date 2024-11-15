@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import logo from "../assets/s.svg";
 
-import { Button } from "./ui/button";
-import { ConnectButton } from "arweave-wallet-kit";
+
+import Wallet from "./Wallet-Button";
 
 // const Navbar: React.FC<NavbarProps> = ({ faqRef, howItWorksRef, switchNetRef }) => {
 //     const navigate = useNavigate();
@@ -218,27 +218,21 @@ const Navbar = () => {
                                         <img src={logo} alt="Logo" className="rounded-full" />
                                     </div>
                                 </div>
-                                
+
                                 <span className="text-xl text-white font-bold p-4">SENTIO</span>
 
                             </a>
                         </div>
                         <div className="hidden md:block">
                             <div className="flex items-center space-x-8">
-                                <button onClick={()=>{navigate("/about")}} className="text-gray-300 hover:text-white">
+                                <button onClick={() => { navigate("/about") }} className="text-gray-300 hover:text-white">
                                     About
                                 </button>
                                 <button onClick={navigateToFaucet} className="text-gray-300 hover:text-white">
                                     Faucet
                                 </button>
 
-                                <Button variant="secondary" className="rounded-xl text-black bg-black hover:gradient-button">
-                                    <ConnectButton
-                                        accent="rgb(63, 63, 63 ,0)"
-                                        profileModal={false}
-                                        showBalance={false}
-                                    />
-                                </Button>
+                                <Wallet />
 
                             </div>
                         </div>

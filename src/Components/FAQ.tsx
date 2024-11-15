@@ -52,11 +52,15 @@ const FAQSection = forwardRef<HTMLDivElement>((_, ref) => {
               key={index}
               className="group rounded-xl border border-[#6C3AE1] p-4 bg-[#1a1a1a] overflow-hidden"
             >
-              <summary className="flex justify-between items-center cursor-pointer font-medium text-lg text-white">
+              <summary className="flex justify-between items-center font-medium text-lg text-white cursor-pointer">
                 <span>{faq.question}</span>
-                <span className="text-2xl text-[#6C3AE1] group-open:rotate-180 transition-transform">&#x25BC;</span>
+                <span
+                  className="text-2xl text-[#6C3AE1] group-open:rotate-180 transition-transform"
+                >
+                  &#x25BC;
+                </span>
               </summary>
-              <p className="mt-4 text-gray-300 whitespace-pre-line">{faq.answer}</p>
+              <p className="mt-4 text-gray-300">{faq.answer}</p>
             </details>
           ))}
         </div>
