@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from "./../Components/ui/button"
-
 import { Activity, Database } from "lucide-react"
 // import Image from "next/image"
 import { useState, useEffect, useRef } from "react"
@@ -80,7 +79,6 @@ export default function Component() {
               >
                 Learn More
               </Button>
-
             </div>
           </div>
 
@@ -175,10 +173,10 @@ export default function Component() {
           </div>
         </div>
       </section>
-      
 
-      <AccordionComp  />
+      <AccordionComp />
       <Footer/>
+
       
       {/* <footer className="border-t border-white/10 bg-black/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
