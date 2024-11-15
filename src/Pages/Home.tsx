@@ -7,6 +7,7 @@ import { Activity, Database } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import AccordionComp from "../Components/Accordion"
 import Navbar from "../Components/Navbar"
+import Footer from "../Components/Footer"
 
 export default function Component() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -177,8 +178,9 @@ export default function Component() {
       
 
       <AccordionComp  />
+      <Footer/>
       
-      <footer className="border-t border-white/10 bg-black/50">
+      {/* <footer className="border-t border-white/10 bg-black/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
@@ -220,7 +222,7 @@ export default function Component() {
             </p>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   )
 }
