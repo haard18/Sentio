@@ -303,7 +303,7 @@ import { ReportItem } from "./Details";
 
 const Certificate = () => {
     const location = useLocation();
-    const { report, reportStats } = location.state;
+    const { report = { vulnerabilities: [] }, reportStats = {} } = location.state || {}; // Provide safe fallbacks
     const certificateRef = useRef<HTMLDivElement | null>(null);
 
     const generatePDF = () => {
@@ -346,6 +346,7 @@ const Certificate = () => {
             }).catch(reject);
         });
     };
+
     const downloadPDF = async () => {
         try {
             const pdf = await generatePDF();
@@ -359,8 +360,7 @@ const Certificate = () => {
         <>
             <div className="flex flex-col items-center justify-center min-h-screen app-background">
                 <div className="w-full mb-10 pb-8">
-
-                <Navbar  />
+                    <Navbar />
                 </div>
 
                 <div ref={certificateRef} className="bg-white p-8 sm:p-10 md:p-12 rounded-lg shadow-lg max-w-3xl w-full mt-10 mx-auto border border-gray-200">
@@ -371,70 +371,100 @@ const Certificate = () => {
                         <p className="mt-3 text-xs text-gray-400">Issued Date: {new Date().toLocaleDateString()}</p>
                     </div>
 
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Report Summary</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                            {[
-                                { label: "Total Lines of Code", value: reportStats?.totalLinesOfCode },
-                                { label: "Unique Vulnerable Lines", value: reportStats?.uniqueVulnerableLines },
-                                { label: "Vulnerable Code %", value: `${reportStats?.vulnerableCodePercentage}%` },
-                            ].map((stat, index) => (
-                                <div key={index} className="bg-blue-50 p-4 rounded-lg shadow-md">
-                                    <p className="text-sm font-semibold text-blue-600">{stat.label}</p>
-                                    <p className="text-lg font-semibold text-blue-900">{stat.value}</p>
+                    {reportStats && Object.keys(reportStats).length > 0 ? (
+                        <>
+                            <div className="mb-6">
+                                <h2 className="text-2xl font-semibold text-gray-700 mb-4">Report Summary</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                                    {[ 
+                                        { label: "Total Lines of Code", value: reportStats?.totalLinesOfCode || "N/A" },
+                                        { label: "Unique Vulnerable Lines", value: reportStats?.uniqueVulnerableLines || "N/A" },
+                                        { label: "Vulnerable Code %", value: `${reportStats?.vulnerableCodePercentage || 0}%` },
+                                    ].map((stat, index) => (
+                                        <div key={index} className="bg-blue-50 p-4 rounded-lg shadow-md">
+                                            <p className="text-sm font-semibold text-blue-600">{stat.label}</p>
+                                            <p className="text-lg font-semibold text-blue-900">{stat.value}</p>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-8">
-                        {[
-                            { label: "High Severity", value: reportStats?.highSeverity, color: "text-red-700" },
-                            { label: "Medium Severity", value: reportStats?.mediumSeverity, color: "text-yellow-600" },
-                            { label: "Low Severity", value: `${reportStats?.lowSeverity}%`, color: "text-green-600" },
-                        ].map((severity, index) => (
-                            <div key={index} className="bg-gray-100 p-4 rounded-lg shadow-md">
-                                <p className="text-sm font-semibold text-gray-600">{severity.label}</p>
-                                <p className={`text-xl font-semibold ${severity.color}`}>{severity.value}</p>
                             </div>
-                        ))}
-                    </div>
 
-                    <div className="mt-6 border-t pt-6">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-3">Threat Checklist</h3>
-                        <ul className="list-disc ml-6 mt-2 text-gray-600">
-                            {reportStats?.threatChecklist.map((item: { exists: boolean; label: string }, index: number) => (
-                                <li key={index} className={item.exists ? "text-red-600 font-semibold" : "text-gray-500"}>
-                                    {item.label}: {item.exists ? "Yes" : "No"}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                            {reportStats.threatChecklist && reportStats.threatChecklist.length > 0 ? (
+                                <div className="mt-6 border-t pt-6">
+                                    <h3 className="text-xl font-semibold text-gray-700 mb-3">Threat Checklist</h3>
+                                    <ul className="list-disc ml-6 mt-2 text-gray-600">
+                                        {reportStats.threatChecklist.map((item: { exists: boolean; label: string }, index: number) => (
+                                            <li key={index} className={item.exists ? "text-red-600 font-semibold" : "text-gray-500"}>
+                                                {item.label}: {item.exists ? "Yes" : "No"}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                <div className="mt-6 border-t pt-6 text-center text-green-600 font-semibold">
+                                    No vulnerabilities found! 🎉 Your code is secure.
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className="text-center font-bold text-gray-600">No report data available.</div>
+                    )}
 
-                    <div className="mt-8 border-t pt-6">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-3">Report Details</h3>
-                        <ul className="space-y-3 text-gray-700">
-                            {report?.vulnerabilities.map((vulnerability: ReportItem, index: number) => (
-                                <li key={index} className="border-b border-gray-200 pb-3">
-                                    <p className="font-semibold text-gray-800">{vulnerability.name}</p>
-                                    <p className="text-sm text-gray-600">Description: {vulnerability.description}</p>
-                                    <p className="text-sm text-gray-500">Severity: <span className={`font-semibold ${vulnerability.severity === "high" ? "text-red-600" : vulnerability.severity === "medium" ? "text-yellow-600" : "text-green-600"}`}>{vulnerability.severity}</span></p>
-                                    <p className="text-sm text-gray-500">Line: {vulnerability.line}</p>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {report.vulnerabilities && report.vulnerabilities.length > 0 ? (
+                        <div className="mt-8 border-t pt-6">
+                            <h3 className="text-xl font-semibold text-gray-700 mb-3">Report Details</h3>
+                            <ul className="space-y-3 text-gray-700">
+                                {report.vulnerabilities.map((vulnerability: ReportItem, index: number) => (
+                                    <li key={index} className="border-b border-gray-200 pb-3">
+                                        <p className="font-semibold text-gray-800">{vulnerability.name}</p>
+                                        <p className="text-sm text-gray-600">Description: {vulnerability.description}</p>
+                                        <p className="text-sm text-gray-500">
+                                            Severity:{" "}
+                                            <span
+                                                className={`font-semibold ${
+                                                    vulnerability.severity === "high"
+                                                        ? "text-red-600"
+                                                        : vulnerability.severity === "medium"
+                                                        ? "text-yellow-600"
+                                                        : "text-green-600"
+                                                }`}
+                                            >
+                                                {vulnerability.severity}
+                                            </span>
+                                        </p>
+                                        <p className="text-sm text-gray-500">Line: {vulnerability.line}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <div className="mt-6 text-center text-green-600 font-semibold">
+                            No vulnerabilities to display. Excellent work!
+                        </div>
+                    )}
 
                     <div className="mt-8 text-center">
                         <p className="text-sm text-gray-500">Certified by Sentio Security Team</p>
-                        <p className="text-xs text-gray-400">Sentio Inc. © {new Date().getFullYear()}</p>
+                        <p className="text-xs text-gray-400">SENTIO Inc. © {new Date().getFullYear()}</p>
                     </div>
                 </div>
 
                 <button
                     onClick={downloadPDF}
-                    className="mt-8 px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-lg hover:from-blue-700 hover:to-blue-800 transition duration-200"
+                    className="mt-8 px-8 py-3 my-6 gradient-button text-white rounded-lg shadow-lg duration-200 flex items-center transform hover:scale-105 hover:translate-y-1"
                 >
+                    <svg
+                        className="w-5 h-5 mr-2"
+                        fill="white"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V3zm7 1a1 1 0 00-1 1v5H7a1 1 0 000 2h2v2a1 1 0 002 0v-2h2a1 1 0 000-2h-2V5a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
                     Download Certificate as PDF
                 </button>
                 <Footer />

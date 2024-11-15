@@ -67,10 +67,16 @@ export default function Component() {
               real-time alerts, and comprehensive reporting—so you always stay protected.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg">
+                <Button 
+                className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg"
+                onClick={() => window.location.href = '/dashboard'}
+                >
                 Start monitoring
-              </Button>
-              <Button className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg">
+                </Button>
+              <Button 
+                className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg"
+                onClick={() => window.location.href = 'https://docs_sentio-app.ar-io.dev/'}
+              >
                 Learn More
               </Button>
 
@@ -171,6 +177,7 @@ export default function Component() {
       
 
       <AccordionComp  />
+      
       <footer className="border-t border-white/10 bg-black/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">

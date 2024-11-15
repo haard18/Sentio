@@ -219,8 +219,9 @@ const Navbar = () => {
                                     </div>
                                 </div>
                                 
+                                <span className="text-xl text-white font-bold p-4">SENTIO</span>
+
                             </a>
-                            <span className="text-xl text-white font-semibold p-4">Sentio</span>
                         </div>
                         <div className="hidden md:block">
                             <div className="flex items-center space-x-8">

@@ -41,11 +41,11 @@ const Faucetspage = () => {
   };
 
   const handleAirDropWithBalanceUpdate = async (walletAddress: string) => {
-    setLoading(true); // Start loading and show the GIF
+    setLoading(true); 
     await handleAirDrop(walletAddress, window.arweaveWallet);
     setTimeout(() => {
       getTokenBalance();
-      setLoading(false); // Stop loading after 3 seconds
+      setLoading(false); 
     }, 3000);
   };
   return (
@@ -55,7 +55,7 @@ const Faucetspage = () => {
 
       <Navbar />
       <DotPatternHover>
-        <div className='w-full flex justify-center'>
+        <div className='w-full flex py-7 justify-center items-center h-full'>
           <div className='flex flex-col items-center text-center px-4 py-10 rounded-xl border    '>
             <h1>tSenti Faucet</h1>
             <p className="text-lg text-[#cfd8e0] max-w-lg mb-6">

@@ -72,23 +72,33 @@ const computeReportStats = (report: Report): ReportStats | null => {
 
 const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
   const navigate = useNavigate();
+  
   const handleCertificate = () => {
     navigate('/certificates', { state: { report, reportStats } });
   };
 
   const reportStats = computeReportStats(report);
-
   if (!reportStats) {
     return (
       <div className="min-h-[50vh] flex flex-col justify-between bg-[#1E1E1E] text-white p-6 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold mb-4">Security Assessment</h2>
-        <p className="text-lg text-green-500">No vulnerabilities found in this codebase.</p>
-        {/* <button className="mt-6 bg-purple-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-purple-600 transition duration-300" onClick={handleCertificate}>
-          Get Security Certification
-        </button> */}
-        <button className="mt-4 bg-[#3b3f5c] gradient-button text-sm px-4 py-2 rounded-xl" onClick={onGoBack}>
-          Go Back
-        </button>
+        <p className="text-lg text-green-500">
+          Congratulations! No vulnerabilities were found in this codebase. 🎉
+        </p>
+        <div className="mt-6 flex justify-between">
+          <button
+            className="bg-[#3b3f5c] gradient-button text-sm px-4 py-2 rounded-xl"
+            onClick={onGoBack}
+          >
+            Go Back
+          </button>
+          <button
+            className="bg-purple-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-purple-600 transition duration-300"
+            onClick={handleCertificate}
+          >
+            Generate Security Certificate
+          </button>
+        </div>
       </div>
     );
   }
@@ -112,18 +122,17 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
     borderWidth: 0, 
     hoverBorderWidth: 0,
     borderColor: 'black',
-    // Removes borders on hover
-
   };
+  
   const options = {
     responsive: true,
-
     plugins: {
       legend: {
-        display: false, // Hide the legend
+        display: false,
       },
     },
   };
+
   return (
     <div className="min-h-[50vh] flex flex-col justify-between bg-[#1E1E1E] text-white p-6 rounded-xl shadow-lg">
       {/* Report Header */}
@@ -170,7 +179,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
                       {lowSeverity} Low
                     </p>
                   </div>
-                  <div className='flex justify-center  gap-4 items-center'>
+                  <div className='flex justify-center gap-4 items-center'>
                     <FaBug className="text-yellow-500" />
                     <p className='bg-yellow-500 rounded-xl px-2 py-1'>
                       {mediumSeverity} Medium
@@ -182,8 +191,6 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
                       {highSeverity} High
                     </p>
                   </div>
-
-
                 </div>
               </div>
             </div>
@@ -204,17 +211,22 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
       </div>
 
       {/* Action Buttons */}
-      {(highSeverity > 0 || mediumSeverity > 0 || lowSeverity > 0) && (
-        <div className="mt-6 flex space-x-4">
-          <button className="bg-green-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-green-600 transition duration-300" onClick={() => console.log('View Details')}>
-            View Details
+      {(highSeverity > 0 || mediumSeverity > 0) && (
+        <div className="mt-6 flex justify-between">
+          <button
+            className="bg-[#3b3f5c] gradient-button text-sm px-4 py-2 rounded-xl"
+            onClick={onGoBack}
+          >
+            Go Back
           </button>
-          <button className="bg-purple-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-purple-600 transition duration-300" onClick={handleCertificate}>
-            Get Security Certification
+          <button
+            className="bg-purple-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-purple-600 transition duration-300"
+            onClick={handleCertificate}
+          >
+            Generate Security Certificate
           </button>
         </div>
       )}
-
     </div>
   );
 };
