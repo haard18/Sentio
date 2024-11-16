@@ -364,10 +364,10 @@ const Offchain = () => {
           </div>
         {/* </DotPatternHover> */}
       </div >
-      <div className="">
 
-        <Footer />
-      </div>
+<Footer />
+
+
     </>
 
   );
