@@ -219,7 +219,7 @@ const Navbar = () => {
                                     </div>
                                 </div>
 
-                                <span className="text-xl  font-bold p-4">SENTIO</span>
+                                <span className="text-xl  font-bold p-4">Sentio</span>
 
                             </a>
                         </div>
