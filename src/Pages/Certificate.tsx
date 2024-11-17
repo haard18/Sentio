@@ -357,7 +357,7 @@ const Certificate = () => {
     };
 
     return (
-        <>
+        <div className="app-background">
             <div className="flex flex-col items-center justify-center min-h-screen app-background">
                 <div className="w-full mb-10 pb-8">
                     <Navbar />
@@ -376,7 +376,7 @@ const Certificate = () => {
                             <div className="mb-6">
                                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Report Summary</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                                    {[ 
+                                    {[
                                         { label: "Total Lines of Code", value: reportStats?.totalLinesOfCode || "N/A" },
                                         { label: "Unique Vulnerable Lines", value: reportStats?.uniqueVulnerableLines || "N/A" },
                                         { label: "Vulnerable Code %", value: `${reportStats?.vulnerableCodePercentage || 0}%` },
@@ -421,13 +421,12 @@ const Certificate = () => {
                                         <p className="text-sm text-gray-500">
                                             Severity:{" "}
                                             <span
-                                                className={`font-semibold ${
-                                                    vulnerability.severity === "high"
-                                                        ? "text-red-600"
-                                                        : vulnerability.severity === "medium"
+                                                className={`font-semibold ${vulnerability.severity === "high"
+                                                    ? "text-red-600"
+                                                    : vulnerability.severity === "medium"
                                                         ? "text-yellow-600"
                                                         : "text-green-600"
-                                                }`}
+                                                    }`}
                                             >
                                                 {vulnerability.severity}
                                             </span>
@@ -467,9 +466,11 @@ const Certificate = () => {
                     </svg>
                     Download Certificate as PDF
                 </button>
-                <Footer />
             </div>
-        </>
+            <section>
+                <Footer />
+            </section>
+        </div>
     );
 };
 
