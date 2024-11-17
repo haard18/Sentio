@@ -221,15 +221,19 @@ const Offchain = () => {
   return (
     <>
       {/* <DotPatternHover> */}
-      <Navbar />
-      <div className="app-background min-h-screen w-full flex flex-col items-center">
+      <div className="app-background">
+        <section>
+
+          <Navbar />
+        </section>
+        <div className="app-background min-h-screen mt-20 w-full flex flex-col items-center">
 
 
 
 
 
 
-        {/* <DotPatternHover> */}
+          {/* <DotPatternHover> */}
           <motion.div
             className="flex flex-col justify-center items-center text-center mb-16 mt-24"
             initial="hidden"
@@ -362,11 +366,11 @@ const Offchain = () => {
               Import from GitHub
             </button>}
           </div>
-        {/* </DotPatternHover> */}
-      </div >
+          {/* </DotPatternHover> */}
 
-<Footer />
-
+        </div >
+        <Footer/>
+      </div>
 
     </>
 

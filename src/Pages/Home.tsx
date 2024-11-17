@@ -140,7 +140,7 @@ export default function Component() {
                     Real-time monitoring and analysis of blockchain transactions, smart contracts, and network activities.
                   </p>
                 </div>
-                <a href="/onchain" className="mt-auto text-purple-500 hover:underline text-lg font-medium">Learn more →</a>
+                <a href="/dashboard" className="mt-auto text-purple-500 hover:underline text-lg font-medium">Learn more →</a>
               </div>
             </div>
 

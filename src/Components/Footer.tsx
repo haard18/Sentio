@@ -55,7 +55,7 @@ const Footer = () => {
                     
                     {/* Contact Section */}
                     <div className="space-y-2">
-                        <h3 className="font-semibold mb-2">Contact</h3>
+                        <h3 className="font-semibold text-white mb-2">Contact</h3>
                         <ul className="flex space-x-4 justify-center">
                             <li>
                                 <a href="mailto:connectsentio@gmail.com" className="text-gray-400 hover:text-white flex items-center">
@@ -82,7 +82,7 @@ const Footer = () => {
 
                     {/* Resources Section */}
                     <div className="space-y-2">
-                        <h3 className="font-semibold mb-2">Resources</h3>
+                        <h3 className="font-semibold text-white mb-2">Resources</h3>
                         <ul className="flex space-x-4 justify-center">
                             <li><a href="docs_sentio-app.ar-io.dev" className="text-gray-400 hover:text-white">Documentation</a></li>
                             <li><a href="mailto:connectsentio@gmail.com" className="text-gray-400 hover:text-white">Help Center</a></li>
