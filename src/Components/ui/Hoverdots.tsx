@@ -57,7 +57,7 @@ export const DotPatternHover = ({
 
 
       {/* Remove h-screen, set min-h-screen or a custom height */}
-      <div className={cn("relative z-50 min-h-screen w-full text-white", className)}>
+      <div className={cn("relative z-20 min-h-screen w-full text-white", className)}>
 
         {children}
       </div>

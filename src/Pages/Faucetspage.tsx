@@ -52,11 +52,14 @@ export default function Component() {
   }
 
   return (
-    <div className="app-background min-h-screen flex flex-col" style={{ fontFamily: "'Amaranth'" }}>
-      <Navbar />
+    <div className="app-background min-h-screen flex flex-col" >
+      <section className='relative z-50 pb-20'>
+
+        <Navbar />
+      </section>
       <DotPatternHover>
         <div className="flex-grow flex items-center mt-12 justify-center px-4 py-12">
-            <div className="max-w-3xl outline my-4 rounded-2xl shadow-2xl overflow-hidden mx-auto">
+          <div className="max-w-3xl outline my-4 rounded-2xl shadow-2xl overflow-hidden mx-auto">
             <div className="p-8 md:p-12">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 text-center">tSenti Faucet</h1>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-8 text-center">

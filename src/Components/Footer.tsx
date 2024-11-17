@@ -47,58 +47,56 @@ const Footer = () => {
         //         <p>&copy; 2024 SENTIO. All rights reserved.</p>
         //     </div>
         // </div>
-        
+
         <footer className="border-t border-white/10 bg-black/50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    <div>
-                        <h3 className="text-sm font-semibold mb-4">Product</h3>
-                        <ul className="space-y-3">
-                            <li><a href="#" className="text-gray-400 hover:text-white">Features</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Security</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Pricing</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 className="text-sm font-semibold mb-4">Contact</h3>
-                        <ul className="space-y-3">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="flex flex-wrap justify-between text-center text-sm">
+                    {/* Product Section */}
+                    
+                    {/* Contact Section */}
+                    <div className="space-y-2">
+                        <h3 className="font-semibold mb-2">Contact</h3>
+                        <ul className="flex space-x-4 justify-center">
                             <li>
-                                <a href="mailto:connectsentio@gmail.com" className="text-gray-400 hover:text-white flex items-center justify-center">
-                                    <FaEnvelope className="mr-2" /> Email
+                                <a href="mailto:connectsentio@gmail.com" className="text-gray-400 hover:text-white flex items-center">
+                                    <FaEnvelope className="mr-1" /> Email
                                 </a>
                             </li>
                             <li>
-                                <a href="https://twitter.com/sentio_AR" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white flex items-center justify-center">
-                                    <FaTwitter className="mr-2" /> Twitter
+                                <a href="https://twitter.com/sentio_AR" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white flex items-center">
+                                    <FaTwitter className="mr-1" /> Twitter
                                 </a>
                             </li>
                             <li>
-                                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white flex items-center justify-center">
-                                    <FaGithub className="mr-2" /> GitHub
+                                <a href="https://github.com/sentioAO" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white flex items-center">
+                                    <FaGithub className="mr-1" /> GitHub
                                 </a>
                             </li>
                             <li>
-                                <a href="https://arweaveindia.com/projects/sentio" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white flex items-center justify-center">
-                                    <FontAwesomeIcon icon={faUpRightFromSquare} className="mr-2" /> Arweave
+                                <a href="https://arweaveindia.com/projects/sentio" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white flex items-center">
+                                    <FontAwesomeIcon icon={faUpRightFromSquare} className="mr-1" /> Arweave
                                 </a>
                             </li>
                         </ul>
                     </div>
-                    <div>
-                        <h3 className="text-sm font-semibold mb-4">Resources</h3>
-                        <ul className="space-y-3">
-                            <li><a href="#" className="text-gray-400 hover:text-white">Documentation</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Help Center</a></li>
+
+                    {/* Resources Section */}
+                    <div className="space-y-2">
+                        <h3 className="font-semibold mb-2">Resources</h3>
+                        <ul className="flex space-x-4 justify-center">
+                            <li><a href="docs_sentio-app.ar-io.dev" className="text-gray-400 hover:text-white">Documentation</a></li>
+                            <li><a href="mailto:connectsentio@gmail.com" className="text-gray-400 hover:text-white">Help Center</a></li>
                         </ul>
                     </div>
                 </div>
-                <div className="mt-8 pt-8 border-t border-white/10 text-center">
-                    <p className="text-gray-400 text-sm">
-                        © {new Date().getFullYear()} Sentio. All rights reserved.
-                    </p>
+
+                {/* Bottom Section */}
+                <div className="mt-6 border-t border-white/10 pt-6 text-gray-400 text-center text-xs">
+                    © {new Date().getFullYear()} Sentio. All rights reserved.
                 </div>
             </div>
         </footer>
+
 
     );
 };

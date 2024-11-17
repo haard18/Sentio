@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 
-import logo from "../assets/s.svg";
+import logo from "../assets/demo2.png";
 
 
 import Wallet from "./Wallet-Button";
@@ -207,8 +207,8 @@ const Navbar = () => {
     }
     return (
         // Floating Navigation
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 w-full max-w-6xl z-50 px-4">
-            <nav className="rounded-full border border-white/10 bg-black/50 backdrop-blur-xl">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 w-full max-w-6xl   z-50 px-4">
+            <nav className="rounded-full border border-white/10  bg-black/50 text-white py-3 items-center backdrop-blur-xl">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center">
@@ -219,16 +219,16 @@ const Navbar = () => {
                                     </div>
                                 </div>
 
-                                <span className="text-xl text-white font-bold p-4">SENTIO</span>
+                                <span className="text-xl  font-bold p-4">SENTIO</span>
 
                             </a>
                         </div>
                         <div className="hidden md:block">
                             <div className="flex items-center space-x-8">
-                                <button onClick={() => { navigate("/about") }} className="text-gray-300 hover:text-white">
+                                <button onClick={() => { navigate("/about") }} className="text-gray-50 hover:text-white">
                                     About
                                 </button>
-                                <button onClick={navigateToFaucet} className="text-gray-300 hover:text-white">
+                                <button onClick={navigateToFaucet} className="text-gray-50 hover:text-white">
                                     Faucet
                                 </button>
 

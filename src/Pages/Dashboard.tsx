@@ -86,15 +86,12 @@ export default function Dashboard() {
 
     <div className="app-background text-white min-h-screen" style={{ fontFamily: "'Roboto'" }}>
 
-      <div className="flex justify-center">
+      <section className="relative ">
         <Navbar />
-      </div>
+      </section>
       <DotPatternHover>
-        <div className="flex justify-center mb-4 mt-5">
-          <h1 className="text-4xl font-bold">Process Dashboard</h1>
-        </div>
-
-        <div className="flex justify-center mt-5">
+        
+        <div className="flex justify-center mt-5 py-20">
           <button
             className="px-10 py-3 text-white bg-[#9966FF] mt-7 z-10 rounded-xl font-bold text-md"
             onClick={() => setSentinelMode(prev => !prev)}

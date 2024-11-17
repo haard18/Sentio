@@ -95,8 +95,8 @@ const SetupPage: React.FC = () => {
                 <Navbar />
             </header>
 
-            <main className='flex-grow container mx-auto px-6 md:px-10 py-12 w-[1/3]'>
-                <section className='rounded-lg bg-gray-800 bg-opacity-70 p-8 shadow-lg mb-12 text-center md:text-left'>
+            <main className='flex-grow container mx-auto px-6 md:px-10 py-20 w-[1/3]'>
+                <section className='rounded-xl bg-gray-800 bg-opacity-70 p-8 shadow-lg mb-12 text-center md:text-left'>
                     <h1 className='text-4xl font-extrabold text-white mb-4'>
                         Sentinel Setup Process
                     </h1>
@@ -108,7 +108,7 @@ const SetupPage: React.FC = () => {
                     </p>}
                 </section>
 
-                <section className='rounded-lg bg-gray-800 bg-opacity-70 p-6 shadow-md mb-8'>
+                <section className='rounded-xl bg-gray-800 bg-opacity-70 p-6 shadow-md mb-8'>
                     <h2 className='text-3xl font-semibold text-gray-100 mb-6 text-center'>
                         Installation Progress
                     </h2>
@@ -128,7 +128,7 @@ const SetupPage: React.FC = () => {
                     </div>
                 </section>
 
-                <section className='rounded-lg bg-gray-800 bg-opacity-70 p-6 shadow-md flex justify-center'>
+                <section className='rounded-xl bg-gray-800 bg-opacity-70 p-6 shadow-md flex justify-center'>
                     <div className="text-center w-full max-w-lg bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg p-6">
                         <h2 className='text-3xl font-semibold text-gray-100 mb-4'>Configure Sentinel</h2>
                         <form className="bg-transparent p-4 rounded-lg grid grid-cols-1 gap-4">

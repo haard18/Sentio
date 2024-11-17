@@ -169,10 +169,10 @@ export default function Component() {
         <FAQSection />
       </section>
       
-      <section className=" relative">
+      <div className=" relative">
 
         <Footer/>
-      </section>
+      </div>
 
 
 

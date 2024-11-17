@@ -41,7 +41,7 @@ const FAQSection = forwardRef<HTMLDivElement>((_, ref) => {
   ];
 
   return (
-    <div ref={ref} className="min-h-screen mb-8 flex items-center justify-center text-white" style={{ fontFamily: "'Amaranth'" }}>
+    <div ref={ref} className="min-h-screen mb-8 flex items-center justify-center text-white"  >
       <div className="w-full max-w-4xl">
         <h1 className="text-4xl font-bold text-center mb-6">FAQ</h1>
         <p className="text-xl text-center text-gray-400 mb-8">Everything You Need to Know About Sentio.</p>
