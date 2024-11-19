@@ -61,7 +61,7 @@ export default function Component() {
               </Button>
 
               <Button
-                className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg"
+                className="bg-white hover:bg-white  text-black rounded-xl px-8 py-6 text-lg"
               >
                 <a href="https://docs_sentio-app.ar-io.dev/" className="w-full h-full flex items-center justify-center">Learn More</a>
               </Button>
