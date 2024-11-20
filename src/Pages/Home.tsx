@@ -47,7 +47,7 @@ export default function Component() {
           {/* Hero Content */}
           <div className="text-center z-10 max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8">
-              Enter an End to End Pipeline with Security, Audit and Monitoring
+              Enter an End to End Pipeline with Security, Audit and Analysis
             </h1>
             <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
               Sentio helps you monitor, audit, and secure your AO processes with intelligent analysis,
