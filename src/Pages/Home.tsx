@@ -47,7 +47,7 @@ export default function Component() {
           {/* Hero Content */}
           <div className="text-center z-10 max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8">
-              Enter an End to End Pipeline with Security, Audit and Monitoring
+              Enter an End to End Pipeline with Security, Audit and Analysis
             </h1>
             <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
               Sentio helps you monitor, audit, and secure your AO processes with intelligent analysis,
@@ -61,7 +61,7 @@ export default function Component() {
               </Button>
 
               <Button
-                className="bg-purple-600 hover:bg-purple-700 gradient-button text-white rounded-xl px-8 py-6 text-lg"
+                className="bg-white hover:bg-white  text-black rounded-xl px-8 py-6 text-lg"
               >
                 <a href="https://docs_sentio-app.ar-io.dev/" className="w-full h-full flex items-center justify-center">Learn More</a>
               </Button>
