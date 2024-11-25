@@ -198,7 +198,7 @@ const Offchain = () => {
     if (code) {
       const fetchAccessToken = async () => {
         try {
-          const authResponse = await axios.post('http://localhost:3000/api/github/exchange-code', { code });
+          const authResponse = await axios.post('https://sam-server.azurewebsites.net/api/github/exchange-code', { code });
           const token = authResponse.data.access_token;
 
           localStorage.setItem('github_access_token', token);
