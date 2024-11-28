@@ -15,6 +15,7 @@ import Aboutus from './Pages/Aboutus';
 import Certificate from './Pages/Certificate';
 import Faucetspage from './Pages/Faucetspage';
 import SetupPage from './Pages/Setup';
+import Webhook from './Pages/GitHook';
 
 // import NoteBookPage from './Pages/Notebook';
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/about" element={<Aboutus />} />
           <Route path="/certificates" element={<Certificate/>} />
           <Route path="/faucets" element={<Faucetspage/>} />
+          <Route path='/webhook' element={<Webhook/>}/>
           
         </Routes>
         <Analytics />
