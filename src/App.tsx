@@ -32,6 +32,9 @@ function App() {
     ReactGA.send({ hitType: "pageview", page: "/dashboard", title: "Dashboard Page" });
     ReactGA.send({ hitType: "pageview", page: "/sentinel/:processId", title: "Sentinel Page" });
     ReactGA.send({ hitType: "pageview", page: "/aboutus", title: "About us Page" });
+    ReactGA.send({ hitType: "pageview", page: "/certificates", title: "Certificates Page" });
+    ReactGA.send({ hitType: "pageview", page: "/faucets", title: "Faucets Page" });
+    ReactGA.send({ hitType: "pageview", page: "/webhook", title: "Webhook Page" });
   });
 
   return (

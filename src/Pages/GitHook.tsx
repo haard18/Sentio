@@ -33,27 +33,7 @@ const Webhook: React.FC = () => {
     }
   };
 
-  const fetchUserAndRepos = async () => {
-    if (!accessToken) return;
 
-    setLoading(true);
-    try {
-      const { data: user } = await axios.get("https://api.github.com/user", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      setUserName(user.login);
-
-      const { data: reposData } = await axios.get("https://api.github.com/user/repos", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-
-      setRepos(reposData.map((repo: { name: string }) => repo.name));
-    } catch {
-      setMessage("Failed to fetch user data or repositories.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,13 +70,37 @@ const Webhook: React.FC = () => {
   }, [accessToken]);
 
   useEffect(() => {
+    const fetchUserAndRepos = async () => {
+      if (!accessToken) return;
+  
+      setLoading(true);
+      try {
+        const { data: user } = await axios.get("https://api.github.com/user", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setUserName(user.login);
+  
+        const { data: reposData } = await axios.get("https://api.github.com/user/repos", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: {
+            per_page: 100
+          }
+        });
+  
+        setRepos(reposData.map((repo: { name: string }) => repo.name));
+      } catch {
+        setMessage("Failed to fetch user data or repositories.");
+      } finally {
+        setLoading(false);
+      }
+    };
     if (accessToken) {
       fetchUserAndRepos();
     }
   }, [accessToken]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900 text-white">
+    <div className="h-screen flex app-background flex-col  text-white">
       <Navbar />
       <div className="flex-grow flex items-center justify-center">
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
