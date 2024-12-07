@@ -6,7 +6,7 @@ const Webhook: React.FC = () => {
   const [userName, setUserName] = useState<string>("");
   const [repos, setRepos] = useState<string[]>([]);
   const [selectedRepo, setSelectedRepo] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>(""); // Updated state variable name
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [accessToken, setAccessToken] = useState<string | null>(
@@ -35,7 +35,7 @@ const Webhook: React.FC = () => {
   };
 
   const handleSetWebhook = async () => {
-    if (!selectedRepo || !userName || !accessToken || !email) {
+    if (!selectedRepo || !userName || !accessToken || !userEmail) { // Updated to userEmail
       setMessage("Please fill out all fields.");
       return;
     }
@@ -47,7 +47,7 @@ const Webhook: React.FC = () => {
       const webhookResponse = await axios.post(`${backend_url}/setWebhook`, {
         userName,
         repoName: selectedRepo,
-        email, // Pass email as part of the body
+        userEmail, // Pass userEmail here
         github_access_token: accessToken,
       });
 
@@ -61,7 +61,7 @@ const Webhook: React.FC = () => {
   };
 
   const handleTriggerWebhook = async () => {
-    if (!selectedRepo || !userName || !accessToken || !email) {
+    if (!selectedRepo || !userName || !accessToken || !userEmail) { // Updated to userEmail
       setMessage("Please fill out all fields.");
       return;
     }
@@ -73,7 +73,7 @@ const Webhook: React.FC = () => {
       const webhookTriggerResponse = await axios.post(`${backend_url}/webhook`, {
         userName,
         repoName: selectedRepo,
-        email, // Pass email here as well
+        userEmail, // Pass userEmail here as well
         github_access_token: accessToken,
       });
 
@@ -167,8 +167,8 @@ const Webhook: React.FC = () => {
                   </select>
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={userEmail} // Updated to userEmail
+                    onChange={(e) => setUserEmail(e.target.value)} // Updated to setUserEmail
                     className="p-3 bg-gray-700 rounded"
                     placeholder="Enter your email"
                     required
