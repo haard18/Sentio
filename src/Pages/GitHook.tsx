@@ -6,15 +6,14 @@ const Webhook: React.FC = () => {
   const [userName, setUserName] = useState<string>("");
   const [repos, setRepos] = useState<string[]>([]);
   const [selectedRepo, setSelectedRepo] = useState<string>("");
-  const [userEmail, setUserEmail] = useState<string>(""); // Updated state variable name
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [accessToken, setAccessToken] = useState<string | null>(
-    localStorage.getItem("github_access_token")
+    localStorage.getItem("github_token")
   );
 
   const client_id = "Ov23li6B22aE7pvYNv3L";
-  const backend_url = "http://localhost:3001";
+  const backend_url = "http://localhost:3001"; // Replace with your backend URL
 
   const handleGitHubAuth = () => {
     const authUrl = `https://github.com/login/oauth/authorize?client_id=${client_id}&scope=repo`;
@@ -27,16 +26,19 @@ const Webhook: React.FC = () => {
         code,
       });
       const token = data.access_token;
-      localStorage.setItem("github_access_token", token);
+      localStorage.setItem("github_token", token);
       setAccessToken(token);
     } catch {
       setMessage("Failed to exchange code for access token.");
     }
   };
 
-  const handleSetWebhook = async () => {
-    if (!selectedRepo || !userName || !accessToken || !userEmail) { // Updated to userEmail
-      setMessage("Please fill out all fields.");
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!selectedRepo || !userName || !accessToken) {
+      setMessage("Please select a repository and ensure you're authenticated.");
       return;
     }
 
@@ -44,43 +46,15 @@ const Webhook: React.FC = () => {
     setMessage("");
 
     try {
-      const webhookResponse = await axios.post(`${backend_url}/setWebhook`, {
+      const response = await axios.post(`${backend_url}/setWebhook`, {
         userName,
         repoName: selectedRepo,
-        userEmail, // Pass userEmail here
-        github_access_token: accessToken,
+        github_access_token: accessToken, // Send github_access_token
       });
-
-      setMessage(webhookResponse.data.message);
+      setMessage(response.data.message);
     } catch (error) {
-      console.error(error);
-      setMessage("Failed to set up webhook.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleTriggerWebhook = async () => {
-    if (!selectedRepo || !userName || !accessToken || !userEmail) { // Updated to userEmail
-      setMessage("Please fill out all fields.");
-      return;
-    }
-
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const webhookTriggerResponse = await axios.post(`${backend_url}/webhook`, {
-        userName,
-        repoName: selectedRepo,
-        userEmail, // Pass userEmail here as well
-        github_access_token: accessToken,
-      });
-
-      setMessage(webhookTriggerResponse.data.message);
-    } catch (error) {
-      console.error(error);
-      setMessage("Failed to trigger webhook.");
+      console.error(error); // Log error for debugging
+      setMessage("Failed to set webhook.");
     } finally {
       setLoading(false);
     }
@@ -98,23 +72,21 @@ const Webhook: React.FC = () => {
   useEffect(() => {
     const fetchUserAndRepos = async () => {
       if (!accessToken) return;
-
+  
       setLoading(true);
       try {
         const { data: user } = await axios.get("https://api.github.com/user", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUserName(user.login);
-
-        const { data: reposData } = await axios.get(
-          "https://api.github.com/user/repos",
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-            params: {
-              per_page: 100,
-            },
+  
+        const { data: reposData } = await axios.get("https://api.github.com/user/repos", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: {
+            per_page: 100
           }
-        );
+        });
+  
         setRepos(reposData.map((repo: { name: string }) => repo.name));
       } catch {
         setMessage("Failed to fetch user data or repositories.");
@@ -128,22 +100,23 @@ const Webhook: React.FC = () => {
   }, [accessToken]);
 
   return (
-    <div className="h-screen flex app-background flex-col text-white">
+    <div className="h-screen flex app-background flex-col  text-white">
       <Navbar />
       <div className="flex-grow flex items-center justify-center">
-        <div className="p-6 rounded-lg shadow-lg">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-4">Set GitHub Webhook</h2>
-          {!accessToken ? (
+          {!accessToken && (
             <button
               onClick={handleGitHubAuth}
-              className="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded mb-4"
+              className="bg-green-600 hover:bg-green-500 text-white p-3 rounded mb-4"
             >
               Authenticate with GitHub
             </button>
-          ) : (
+          )}
+          {accessToken && (
             <>
               {repos.length > 0 ? (
-                <div className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   <input
                     type="text"
                     value={userName}
@@ -165,38 +138,20 @@ const Webhook: React.FC = () => {
                       </option>
                     ))}
                   </select>
-                  <input
-                    type="email"
-                    value={userEmail} // Updated to userEmail
-                    onChange={(e) => setUserEmail(e.target.value)} // Updated to setUserEmail
-                    className="p-3 bg-gray-700 rounded"
-                    placeholder="Enter your email"
-                    required
-                  />
                   <button
-                    onClick={handleSetWebhook}
-                    className="bg-purple-500 hover:bg-purple-700 text-white p-3 rounded"
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded"
                     disabled={loading}
                   >
-                    {loading ? "Setting Webhook..." : "Set Webhook"}
+                    {loading ? "Creating..." : "Set Webhook"}
                   </button>
-                  <button
-                    onClick={handleTriggerWebhook}
-                    className="bg-blue-500 hover:bg-blue-700 text-white p-3 rounded mt-4"
-                    disabled={loading}
-                  >
-                    {loading ? "Triggering Webhook..." : "Trigger Webhook"}
-                  </button>
-                  {message && <p className="mt-4">{message}</p>}
-                </div>
+                </form>
               ) : (
-                <div className="flex justify-center items-center">
-                  <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
-                  <p className="ml-4">Loading repositories...</p>
-                </div>
+                <p>Loading repositories...</p>
               )}
             </>
           )}
+          {message && <p className="mt-4">{message}</p>}
         </div>
       </div>
     </div>
