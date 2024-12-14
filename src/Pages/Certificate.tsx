@@ -324,6 +324,7 @@ const Certificate = () => {
                 useCORS: true,
                 scrollY: -window.scrollY,
             }).then((canvas) => {
+                
                 const imgData = canvas.toDataURL("image/png");
                 const imgWidth = pdfWidth;
                 const imgHeight = (canvas.height * pdfWidth) / canvas.width;
