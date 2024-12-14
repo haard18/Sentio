@@ -356,6 +356,112 @@ const Certificate = () => {
         }
     };
 
+    const generateHTML = () => {
+        const input = certificateRef.current;
+        if (!input) {
+            console.error("Report reference is not defined.");
+            return;
+        }
+    
+        // Extract inner HTML of the certificate
+        const htmlContent = input.innerHTML;
+    
+        // Create a style tag for the CSS to be embedded in the HTML
+        const styleTag = document.createElement("style");
+        styleTag.innerHTML = `
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f7fafc; /* Light background color */
+            }
+            .certificate-container {
+                background-color: #ffffff; /* White background for the certificate */
+                padding: 32px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                max-width: 800px;
+                margin: 0 auto;
+                border: 1px solid #e5e7eb; /* Light gray border */
+            }
+            .text-center {
+                text-align: center;
+            }
+            .font-semibold {
+                font-weight: 600;
+            }
+            .text-gray-800 {
+                color: #2d3748; /* Dark gray for main text */
+            }
+            .text-gray-500 {
+                color: #6b7280; /* Medium gray for secondary text */
+            }
+            .text-gray-400 {
+                color: #cbd5e0; /* Light gray for less emphasized text */
+            }
+            .bg-blue-50 {
+                background-color: #eff6ff; /* Light blue for background */
+            }
+            .text-blue-600 {
+                color: #3182ce; /* Medium blue for text */
+            }
+            .text-blue-900 {
+                color: #1a365d; /* Dark blue for emphasized text */
+            }
+            .bg-green-50 {
+                background-color: #f0fdf4; /* Light green for background */
+            }
+            .text-green-600 {
+                color: #48bb78; /* Green color for success */
+            }
+            .text-red-600 {
+                color: #e53e3e; /* Red color for errors or alerts */
+            }
+            .text-yellow-600 {
+                color: #d69e2e; /* Yellow color for medium severity */
+            }
+            .gradient-button {
+                background-image: linear-gradient(90deg, #4f46e5, #3b82f6); /* Gradient background */
+                color: white;
+            }
+            /* Other custom styles can be added here */
+        `;
+    
+        // Create a full HTML structure with styles and content
+        const fullHTML = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Certificate of Analysis</title>
+                <style>
+                    ${styleTag.innerHTML}
+                </style>
+            </head>
+            <body bgcolor="#f7fafc">
+                <div class="certificate-container">
+                    ${htmlContent}
+                </div>
+            </body>
+            </html>
+        `;
+    
+        // Create a Blob from the HTML content
+        const htmlBlob = new Blob([fullHTML], { type: "text/html" });
+    
+        // Create an object URL for the Blob and trigger the download
+        const url = URL.createObjectURL(htmlBlob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Sentio-Audit.html";  // Name of the downloaded HTML file
+        a.click();
+    
+        // Revoke the object URL after use
+        URL.revokeObjectURL(url);
+    };
+    
+    
     return (
         <div className="app-background">
             <div className="flex flex-col items-center justify-center min-h-screen app-background">
@@ -376,16 +482,15 @@ const Certificate = () => {
                             <div className="mb-6">
                                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Report Summary</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                                    {[
-                                        { label: "Total Lines of Code", value: reportStats?.totalLinesOfCode || "N/A" },
-                                        { label: "Unique Vulnerable Lines", value: reportStats?.uniqueVulnerableLines || "N/A" },
-                                        { label: "Vulnerable Code %", value: `${reportStats?.vulnerableCodePercentage || 0}%` },
-                                    ].map((stat, index) => (
-                                        <div key={index} className="bg-blue-50 p-4 rounded-lg shadow-md">
-                                            <p className="text-sm font-semibold text-blue-600">{stat.label}</p>
-                                            <p className="text-lg font-semibold text-blue-900">{stat.value}</p>
-                                        </div>
-                                    ))}
+                                    {[{ label: "Total Lines of Code", value: reportStats?.totalLinesOfCode || "N/A" },
+                                    { label: "Unique Vulnerable Lines", value: reportStats?.uniqueVulnerableLines || "N/A" },
+                                    { label: "Vulnerable Code %", value: `${reportStats?.vulnerableCodePercentage || 0}%` }]
+                                        .map((stat, index) => (
+                                            <div key={index} className="bg-blue-50 p-4 rounded-lg shadow-md">
+                                                <p className="text-sm font-semibold text-blue-600">{stat.label}</p>
+                                                <p className="text-lg font-semibold text-blue-900">{stat.value}</p>
+                                            </div>
+                                        ))}
                                 </div>
                             </div>
 
@@ -420,14 +525,7 @@ const Certificate = () => {
                                         <p className="text-sm text-gray-600">Description: {vulnerability.description}</p>
                                         <p className="text-sm text-gray-500">
                                             Severity:{" "}
-                                            <span
-                                                className={`font-semibold ${vulnerability.severity === "high"
-                                                    ? "text-red-600"
-                                                    : vulnerability.severity === "medium"
-                                                        ? "text-yellow-600"
-                                                        : "text-green-600"
-                                                    }`}
-                                            >
+                                            <span className={`font-semibold ${vulnerability.severity === "high" ? "text-red-600" : vulnerability.severity === "medium" ? "text-yellow-600" : "text-green-600"}`}>
                                                 {vulnerability.severity}
                                             </span>
                                         </p>
@@ -448,24 +546,51 @@ const Certificate = () => {
                     </div>
                 </div>
 
-                <button
-                    onClick={downloadPDF}
-                    className="mt-8 px-8 py-3 my-6 gradient-button text-white rounded-lg shadow-lg duration-200 flex items-center transform hover:scale-105 hover:translate-y-1"
-                >
-                    <svg
-                        className="w-5 h-5 mr-2"
-                        fill="white"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                <div className="flex justify-center space-x-4 mt-8 my-7">
+                    <button
+                        onClick={downloadPDF}
+                        className="px-6 py-2 gradient-button text-white rounded-lg shadow-lg duration-200 flex items-center transform hover:scale-105 hover:translate-y-1"
                     >
-                        <path
-                            fillRule="evenodd"
-                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V3zm7 1a1 1 0 00-1 1v5H7a1 1 0 000 2h2v2a1 1 0 002 0v-2h2a1 1 0 000-2h-2V5a1 1 0 00-1-1z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-                    Download Certificate as PDF
-                </button>
+                        <svg
+                            className="w-5 h-5 mr-2"
+                            fill="white"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V3zm7 1a1 1 0 00-1 1v5H7a1 1 0 000 2h2v2a1 1 0 002 0v-2h2a1 1 0 000-2h-2V5a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                        Download PDF
+                    </button>
+
+                    <button
+                        onClick={generateHTML}
+                        className="px-6 py-2 gradient-button text-white rounded-lg shadow-lg duration-200 flex items-center transform hover:scale-105 hover:translate-y-1"
+                    >
+                        <svg
+                            className="w-5 h-5 mr-2"
+                            fill="white"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 9.293a1 1 0 01-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 011.414-1.414L10 8.586l2.293-2.293a1 1 0 011.414 1.414L11.414 10l2.293 2.293z"
+                                clipRule="evenodd"
+                            />
+                            <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-9a1 1 0 112 0v2a1 1 0 11-2 0V9z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                        Export HTML
+                    </button>
+                </div>
+
             </div>
             <section>
                 <Footer />
