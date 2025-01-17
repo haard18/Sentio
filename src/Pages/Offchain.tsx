@@ -220,63 +220,59 @@ const Offchain = () => {
 
   return (
     <>
-      {/* <DotPatternHover> */}
       <div className="app-background">
         <section>
-
           <Navbar />
         </section>
         <div className="app-background min-h-screen mt-20 w-full flex flex-col items-center">
-
-
-
-
-
-
-          {/* <DotPatternHover> */}
           <motion.div
             className="flex flex-col justify-center items-center text-center mb-16 mt-24"
             initial="hidden"
             animate="visible"
             variants={textVariant}
           >
-
-            <p className="text-white text-2xl md:text-5xl font-extralight mt-2 md:mt-4" style={{ fontFamily: "'Roboto'" }}>
-              With Code Audits, you need to be sure that your code <br />is secure and free from vulnerabilities
+            <p
+              className="text-white text-2xl md:text-5xl font-extralight mt-2 md:mt-4"
+              style={{ fontFamily: "'Roboto'" }}
+            >
+              With Code Audits, you need to be sure that your code <br />
+              is secure and free from vulnerabilities
               <motion.span
                 className="inline-block px-2 py-1 font-extrabold text-[#9966ff] rounded-lg"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1, ease: [0.43, 0.13, 0.23, 0.96], delay: 0.3 }}
+                transition={{
+                  duration: 1,
+                  ease: [0.43, 0.13, 0.23, 0.96],
+                  delay: 0.3,
+                }}
               >
                 before deployment.
               </motion.span>
             </p>
           </motion.div>
+  
           <div className="flex p-10 w-full justify-center flex-col items-center">
             {showProgress && !report ? (
               <div className="relative w-full">
                 <div className="absolute top-0 left-0 w-full h-2 bg-gray-800 rounded-lg overflow-hidden">
                   <motion.div
                     className="h-full bg-gradient-to-r from-green-400 to-green-600"
-                    initial={{ width: '0%' }}
+                    initial={{ width: "0%" }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.75, ease: "easeInOut" }}
                   />
                 </div>
-                <div className="text-center mt-4 text-gray-300 font-mono">{progressText}</div>
+                <div className="text-center mt-4 text-gray-300 font-mono">
+                  {progressText}
+                </div>
               </div>
             ) : !report ? (
-
-
-
-
               <CodeEditor
                 value={code}
                 onChange={handleCodeChange}
                 onAnalyze={handleAnalyze}
               />
-
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -286,14 +282,17 @@ const Offchain = () => {
                 <ReportCard report={report} onGoBack={handleGoBack} />
               </motion.div>
             )}
-
-            {/* GIF display logic */}
+  
             {showGif && (
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
-                <img src={TransactionGif} alt="Transfer in progress" className="w-[50%] h-auto" />
+                <img
+                  src={TransactionGif}
+                  alt="Transfer in progress"
+                  className="w-[50%] h-auto"
+                />
               </div>
             )}
-
+  
             {isModalOpen && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                 <motion.div
@@ -302,7 +301,9 @@ const Offchain = () => {
                   transition={{ duration: 0.3 }}
                   className="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-md"
                 >
-                  <h2 className="text-xl text-[#9966ff] font-semibold mb-4">Select a Repository</h2>
+                  <h2 className="text-xl text-[#9966ff] font-semibold mb-4">
+                    Select a Repository
+                  </h2>
                   <select
                     className="border rounded px-3 py-2 w-full mb-4"
                     value={selectedRepo}
@@ -339,7 +340,7 @@ const Offchain = () => {
                   )}
                   <div className="flex justify-end space-x-2 mt-4">
                     <button
-                      className="gradient-button text-white  px-4 py-2 rounded hover:bg-gray-400"
+                      className="gradient-button text-white px-4 py-2 rounded hover:bg-gray-400"
                       onClick={() => setIsModalOpen(false)}
                     >
                       Cancel
@@ -354,27 +355,31 @@ const Offchain = () => {
                 </motion.div>
               </div>
             )}
-
-            {<button
-              className={`gradient-button text-white font-medium px-4 py-2 rounded-xl mt-4 border border-gray-600 shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ${code.trim() !== '' ? 'opacity-50 cursor-not-allowed' : ''}`}
+  
+            <button
+              className={`gradient-button text-white font-medium px-4 py-2 rounded-xl mt-4 border border-gray-600 shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ${
+                code.trim() !== "" ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               onClick={handleGitHubImport}
-              disabled={code.trim() !== ''}
+              disabled={code.trim() !== ""}
             >
-              <svg className="w-5 h-5 inline-block mr-2" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+              <svg
+                className="w-5 h-5 inline-block mr-2"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+              >
                 <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.6c.4.08.55-.17.55-.38v-1.34c-2.23.48-2.69-1.07-2.69-1.07-.36-.91-.88-1.15-.88-1.15-.72-.49.05-.48.05-.48.8.06 1.22.82 1.22.82.71 1.22 1.87.87 2.33.66.07-.51.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.97 0-.88.31-1.6.82-2.16-.08-.2-.36-1.02.08-2.12 0 0 .67-.22 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.52-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.16 0 3.09-1.87 3.76-3.65 3.96.29.25.54.74.54 1.5v2.22c0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z" />
               </svg>
               Import from GitHub
-            </button>}
+            </button>
           </div>
-          {/* </DotPatternHover> */}
-
-        </div >
-        <Footer/>
+        </div>
+        <Footer />
       </div>
-
     </>
-
   );
+  
 }
 
 export default Offchain;
