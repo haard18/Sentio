@@ -7,11 +7,8 @@ import axios from 'axios';
 import qs from 'qs';
 import { motion } from 'framer-motion';
 import Footer from "../Components/Footer";
-// import { handleTokenTransfer } from "../lib/tokenServices";
 import TransactionGif from "../assets/Transactiogif2.gif";
 import { handleTokenTransfer } from "../lib/tokenServices";
-// import { DotPatternHover } from "../Components/ui/Hoverdots";
-// import { DotPatternHover } from "../Components/ui/Hoverdots";
 
 interface Repository {
   id: number;
@@ -49,8 +46,6 @@ const Offchain = () => {
     setShowGif(true);
     try {
       await handleTokenTransfer(window.arweaveWallet, 1); // Example amount and wallet, adjust as needed
-
-      // Show the GIF after a successful transfer
       setShowGif(false);
     } catch (error) {
       console.error("Analysis canceled due to token transfer failure", error);
@@ -77,13 +72,11 @@ const Offchain = () => {
 
     try {
       const response = await axios.post('https://sam-offchain-dbedazdhd2dugrdk.eastus-01.azurewebsites.net/analyze',
-        // const response = await axios.post('http://127.0.0.1:5000/analyze',
         qs.stringify({ code }), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       });
-      console.log()
       setReport(response.data);
     } catch (error) {
       console.error('Error analyzing code:', error);
@@ -142,7 +135,10 @@ const Offchain = () => {
       const content = response.data;
       setProgress(100);
       setProgressText('Loading file content');
-      setCode(content);
+      
+      // Prepend the file name to the code content
+      const updatedCode = `// File: ${selectedFile}\n\n${content}`;
+      setCode(updatedCode);
       setIsModalOpen(false);
       setSelectedRepo('');
       setSelectedFile('');
@@ -379,7 +375,6 @@ const Offchain = () => {
       </div>
     </>
   );
-  
-}
+};
 
 export default Offchain;

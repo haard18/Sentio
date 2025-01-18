@@ -292,6 +292,10 @@
 //         </div>
 //     );
 // }
+
+
+
+
 import { useLocation } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -351,7 +355,10 @@ const Certificate = () => {
     const downloadPDF = async () => {
         try {
             const pdf = await generatePDF();
-            pdf.save("Sentio-Audit.pdf");
+
+            // Dynamically set the file name for the PDF
+            const fileName = `Sentio-Audit-${new Date().toLocaleDateString()}.pdf`.replace(/\//g, '-');
+            pdf.save(fileName);
         } catch (error) {
             console.error("Error generating PDF for download:", error);
         }
@@ -485,8 +492,7 @@ const Certificate = () => {
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                                     {[{ label: "Total Lines of Code", value: reportStats?.totalLinesOfCode || "N/A" },
                                     { label: "Unique Vulnerable Lines", value: reportStats?.uniqueVulnerableLines || "N/A" },
-                                    { label: "Vulnerable Code %", value: `${reportStats?.vulnerableCodePercentage || 0}%` }]
-                                        .map((stat, index) => (
+                                    { label: "Vulnerable Code %", value: `${reportStats?.vulnerableCodePercentage || 0}%` }].map((stat, index) => (
                                             <div key={index} className="bg-blue-50 p-4 rounded-lg shadow-md">
                                                 <p className="text-sm font-semibold text-blue-600">{stat.label}</p>
                                                 <p className="text-lg font-semibold text-blue-900">{stat.value}</p>
@@ -601,3 +607,4 @@ const Certificate = () => {
 };
 
 export default Certificate;
+
