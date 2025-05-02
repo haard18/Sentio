@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import logo from "../assets/demo2.png";
+import logo from "../assets/unnamed.png";
 import Wallet from "./Wallet-Button";
 
 const Navbar = () => {
@@ -14,7 +14,7 @@ const Navbar = () => {
 
     const navigateToFaucet = () => {
         navigate("/faucets");
-        setIsMenuOpen(false); // Close menu on navigation
+        setIsMenuOpen(false); 
     };
 
     return (
