@@ -31,7 +31,7 @@ const Footer = () => {
                             </li>
                             <li>
                                 <a
-                                    href="https://github.com/sentioAO"
+                                    href="https://github.com/haard18/sentio"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-gray-400 hover:text-white flex items-center"
