@@ -1,6 +1,6 @@
-import { FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { FaTwitter, FaEnvelope } from "react-icons/fa";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
     return (
