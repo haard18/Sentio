@@ -29,7 +29,7 @@ const Footer = () => {
                                     <FaTwitter className="mr-1" /> Twitter
                                 </a>
                             </li>
-                            <li>
+{/*                             <li>
                                 <a
                                     href="https://github.com/haard18/sentio"
                                     target="_blank"
@@ -48,7 +48,7 @@ const Footer = () => {
                                 >
                                     <FontAwesomeIcon icon={faUpRightFromSquare} className="mr-1" /> Arweave
                                 </a>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
 
