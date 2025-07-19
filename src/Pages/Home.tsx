@@ -69,7 +69,7 @@ export default function Component() {
 
             <motion.p className="text-xl text-purple-100/80 mb-12 max-w-2xl mx-auto leading-relaxed" variants={fadeIn}>
               Sentio helps you monitor, audit, and secure your AO processes with intelligent analysis, real-time alerts,
-              and comprehensive reporting—so you always stay protected.
+              and comprehensive reporting so you always stay protected.
             </motion.p>
 
             {/* Redesigned button layout */}
