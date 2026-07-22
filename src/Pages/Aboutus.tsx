@@ -1,26 +1,16 @@
-
 import { TimelineDemo } from '../Components/TimelineDemo'
 import Navbar from '../Components/Navbar'
-import Footer from "../Components/Footer"
-import { DotPatternHover } from '../Components/ui/Hoverdots'
-
+import Footer from '../Components/Footer'
 
 const Aboutus = () => {
   return (
-    <>
-      <div className='app-background h-screen w-full app-background'>
-        <section className=" relative">
-          <Navbar />
-        </section>
-        <DotPatternHover>
-          <div className="timeline pt-20  app-background">
-            <TimelineDemo />
-            <Footer />
-          </div>
-        </DotPatternHover>
-      </div>
-
-    </>
+    <div className="flex min-h-screen flex-col bg-void text-phosphor">
+      <Navbar />
+      <main className="mt-14 flex-1">
+        <TimelineDemo />
+      </main>
+      <Footer />
+    </div>
   )
 }
 

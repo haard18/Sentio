@@ -1,9 +1,9 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ReportDetails from '../Components/ReportDetails';
+import Navbar from '../Components/Navbar';
 import Footer from '../Components/Footer';
 
-// Define the ReportItem type
 export interface ReportItem {
   description: string;
   line: number;
@@ -12,57 +12,73 @@ export interface ReportItem {
   severity: string;
 }
 
+interface LocationState {
+  report: ReportItem[];
+}
+
 const ReportDetailsPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Define the type for location state
-  interface LocationState {
-    report: ReportItem[];
-  }
+  // Reached directly (no navigation state) this page has nothing to render.
+  const report = (location.state as LocationState | null)?.report ?? [];
 
-  const { report } = location.state as LocationState; // Cast location.state to LocationState
+  const bySeverity = (s: string) =>
+    report.filter((item) => item.severity?.toLowerCase() === s);
 
-  const highSeverityItems: ReportItem[] = report.filter(item => item.severity.toLowerCase() === 'high');
-  const mediumSeverityItems: ReportItem[] = report.filter(item => item.severity.toLowerCase() === 'medium');
-  const lowSeverityItems: ReportItem[] = report.filter(item => item.severity.toLowerCase() === 'low');
+  const groups = [
+    { label: 'High severity', color: 'bg-hazard', items: bySeverity('high') },
+    { label: 'Medium Severity', color: 'bg-phosphor', items: bySeverity('medium') },
+    { label: 'Low Severity', color: 'bg-rule2', items: bySeverity('low') },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] text-white p-4 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Detailed Report</h2>
-        <button className="bg-[#3b3f5c] text-sm px-4 py-2 rounded-lg" onClick={() => navigate(-1)}>
-          Go Back
-        </button>
-      </div>
+    <div className="flex min-h-screen flex-col bg-void text-phosphor">
+      <Navbar />
 
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="flex flex-col flex-grow-0">
-          <ReportDetails
-            reportItems={highSeverityItems}
-            severityLabel="High Severity"
-            severityColor="bg-red-500"
-          />
+      <header className="mt-14 border-b border-rule">
+        <div className="shell flex flex-col gap-4 py-12 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span className="t-meta text-hazard">Findings</span>
+            <h1 className="t-display-lg mt-3">Detailed report</h1>
+          </div>
+          <div className="flex items-center gap-6">
+            <div>
+              <span className="t-meta">Total</span>
+              <p className="t-display text-3xl tabular-nums">
+                {String(report.length).padStart(2, '0')}
+              </p>
+            </div>
+            <button className="btn btn-ghost" onClick={() => navigate(-1)}> Go back
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col flex-grow-0">
-          <ReportDetails
-            reportItems={mediumSeverityItems}
-            severityLabel="Medium Severity"
-            severityColor="bg-yellow-500"
-          />
-        </div>
-        <div className="flex flex-col flex-grow-0">
-          <ReportDetails
-            reportItems={lowSeverityItems}
-            severityLabel="Low Severity"
-            severityColor="bg-green-500"
-          />
-        </div>
-      </div>
-      <div className='relative bottom-0 left-0 right-0'>
+      </header>
 
-        <Footer />
-      </div>
+      <main className="shell flex-1 py-10">
+        {report.length === 0 ? (
+          <div className="panel p-8 text-center">
+            <p className="t-display-md text-rule2">∅</p>
+            <p className="t-body mx-auto mt-4">
+              No report data was passed to this page. Run an audit first.
+            </p>
+            <a href="/offchain" className="btn mt-6">Run an audit</a>
+          </div>
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-3 lg:items-start">
+            {groups.map((g) => (
+              <ReportDetails
+                key={g.label}
+                reportItems={g.items}
+                severityLabel={g.label}
+                severityColor={g.color}
+              />
+            ))}
+          </div>
+        )}
+      </main>
+
+      <Footer />
     </div>
   );
 };

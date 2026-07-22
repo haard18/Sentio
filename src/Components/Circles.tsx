@@ -2,8 +2,8 @@ import OrbitingCircles from "./ui/orbiting-circles"
 import Ao from "../assets/AO2.png"
 export function OrbitingCirclesDemo() {
   return (
-    <div className="relative flex h-[500px] w-full  flex-col items-center justify-center overflow-hidden rounded-lg border bg-black md:shadow-xl">
-      <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300 bg-clip-text text-center text-6xl font-semibold leading-none text-transparent dark:from-white dark:to-black">
+    <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden border border-rule bg-void">
+      <span className="t-display pointer-events-none text-center text-6xl text-phosphor">
         Sentinel
       </span>
 

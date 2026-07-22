@@ -1,41 +1,29 @@
+/* Legacy class kept so untouched pages inherit the substrate rather than
+   the old purple gradient. Prefer bg-void in new markup. */
 .app-background {
-  background: linear-gradient(195deg, #080708 , #340e51 100%);
-  /* background: #090708; */
-  overflow: auto;
+  background: var(--bg);
 }
 
-.debug-border {
-  border: 2px solid red !important;
+.gradient-button,
+.modal-gradient {
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 
-.gradient-button {
-  /* background: linear-gradient(60deg, #9039D7, #6C3AE1); */
-  background: linear-gradient(20deg, #080708, #6C3AE1 20%);
-  /* background-color: #090708; */
-
-}
-
+/* CodeMirror: square it off and drop it onto the terminal substrate. */
 .CodeMirror.cm-s-dracula {
-  border: 2px solid #2c2c2c;  
-  /* Adjust the border color as needed */
-  border-radius: 12px;
-  /* Add rounded corners */
+  border: 1px solid var(--line-bright);
+  border-radius: 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
 }
-
-.gradient-button {
-  background: linear-gradient(60deg, #9039D7, #6C3AE1);
-}
-.modal-gradient{
-  background: linear-gradient(60deg, #1a0842, #6C3AE1);
-}
-/* Add border-radius to the editor container */
 
 .CodeMirror-scroll {
-  background: linear-gradient(145deg, #2F2F2F, #1F1F1F);
-  /* border-; */
-  border-radius: 12px;
+  background: var(--surface);
+  border-radius: 0;
 }
 
-.CodeMirror-gutter {
-  background-color: #2F2F2F;
+.CodeMirror-gutter,
+.CodeMirror-gutters {
+  background-color: var(--surface-2);
+  border-right: 1px solid var(--line);
 }

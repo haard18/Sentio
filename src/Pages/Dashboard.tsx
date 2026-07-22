@@ -10,7 +10,6 @@ import SentinelDemo from "../Components/SentinelDemo";
 // import { cn } from "../lib/utils";
 
 import Sentinel from "../Components/Sentinel"; // Import the Sentinel component
-import { DotPatternHover } from "../Components/ui/Hoverdots";
 import Footer from "../Components/Footer";
 
 interface Tag {
@@ -84,45 +83,93 @@ export default function Dashboard() {
 
   return (
 
-    <div className="app-background text-white min-h-screen" style={{ fontFamily: "'Roboto'" }}>
+    <div className="flex min-h-screen flex-col bg-void text-phosphor">
 
-      <section className="relative ">
-        <Navbar />
-      </section>
-      <DotPatternHover>
-        
-        <div className="flex justify-center mt-5 py-20">
-          <button
-            className="px-10 py-3 text-white bg-[#9966FF] mt-7 z-10 rounded-xl font-bold text-md"
-            onClick={() => setSentinelMode(prev => !prev)}
-          >
-            {sentinelMode ? 'Cancel Setup Sentinel' : 'Setup Sentinel'}
-          </button>
+      <Navbar />
+
+      {/* Command header — status readout, not a hero. */}
+      <header className="mt-14 border-b border-rule">
+        <div className="shell flex flex-col gap-6 py-10 md:flex-row md:items-end md:justify-between">
+          <div>
+            <span className="t-meta text-hazard">Console</span>
+            <h1 className="t-display-lg mt-3">Processes</h1>
+          </div>
+
+          <dl className="flex flex-wrap items-end gap-x-8 gap-y-3">
+            <div>
+              <dt className="t-meta">Indexed</dt>
+              <dd className="t-display text-3xl tabular-nums">
+                {String(processes.length).padStart(2, "0")}
+              </dd>
+            </div>
+            <div>
+              <dt className="t-meta">Selected</dt>
+              <dd className="t-display text-3xl tabular-nums">
+                {String(selectedProcesses.length).padStart(2, "0")}
+              </dd>
+            </div>
+            <div>
+              <dt className="t-meta">Wallet</dt>
+              <dd className="t-label mt-1 flex items-center gap-2">
+                {walletId ? (
+                  <>
+                    <span className="led" aria-hidden />
+                    {walletId.slice(0, 6)}…{walletId.slice(-4)}
+                  </>
+                ) : (
+                  <span className="text-faint">Not connected</span>
+                )}
+              </dd>
+            </div>
+            <button
+              className={sentinelMode ? "btn btn-ghost" : "btn btn-accent"}
+              onClick={() => setSentinelMode(prev => !prev)}
+            >
+              {sentinelMode ? 'Cancel setup' : 'Set up sentinel'}
+            </button>
+          </dl>
         </div>
+      </header>
 
+      <main className="shell flex-1 py-10">
         {loading ? (
-          <div className="flex justify-center items-center mt-5 h-48">
-            <svg className="animate-spin h-12 w-12 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8l4 4-4 4v-8a8 8 0 00-8-8z"></path>
-            </svg>
+          <div className="panel">
+            <div className="panel-head">
+              <span className="t-label">Querying index</span>
+              <span className="t-meta text-faint">Please wait</span>
+            </div>
+            <div className="grid gap-1 p-5 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-28 animate-pulse border border-rule bg-steel2" />
+              ))}
+            </div>
           </div>
         ) : error ? (
-          <div className="text-red-500">{error}</div>
+          <div className="panel border-hazard">
+            <div className="panel-head border-hazard">
+              <span className="t-label text-hazard2">Query failed</span>
+            </div>
+            <p className="t-body p-5">{error}</p>
+            <div className="px-5 pb-5">
+              <button className="btn btn-sm" onClick={() => walletId && fetchProcessDetails(walletId)}>
+                Retry
+              </button>
+            </div>
+          </div>
         ) : processes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {processes.map((process, index) => (
               <div key={index}>
                 {sentinelMode && (
-                  <div className="mb-2 flex items-start ">
+                  <label className="mb-1 flex cursor-pointer items-center gap-2 border border-rule bg-steel2 px-3 py-2">
                     <input
                       type="checkbox"
                       checked={selectedProcesses.includes(process.node.id)}
                       onChange={() => handleProcessSelection(process.node.id)}
-                      className="mt-1"
+                      className="h-3 w-3 accent-[#E61919]"
                     />
-                    <span className="ml-2 text-white break-words w-full">{`Select ${process.node.id}`}</span>
-                  </div>
+                    <span className="t-meta">Select for sentinel</span>
+                  </label>
                 )}
                 <ProcessCard
                   process={process.node}
@@ -136,7 +183,19 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          <p>No process found with the given ID.</p>
+          <div className="panel">
+            <div className="panel-head">
+              <span className="t-label">No records</span>
+            </div>
+            <div className="p-8 text-center">
+              <p className="t-display-md text-rule2">∅</p>
+              <p className="t-body mx-auto mt-4">
+                {walletId
+                  ? "No processes indexed for this wallet."
+                  : "Connect a wallet to index your processes."}
+              </p>
+            </div>
+          </div>
         )}
 
         {sentinelMode && (
@@ -153,25 +212,35 @@ export default function Dashboard() {
         )}
 
         {showSentinelDemo && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-5 rounded-lg shadow-lg max-w-md relative">
-              <button
-                className="absolute top-2 right-2 text-gray-600"
-                onClick={() => setShowSentinelDemo(false)}
-              >
-                Close
-              </button>
-              <SentinelDemo />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-void/90 p-4">
+            <div className="panel w-full max-w-md">
+              <div className="panel-head">
+                <span className="t-label">Sentinel demo</span>
+                <button
+                  className="t-label text-dim hover:text-hazard2"
+                  onClick={() => setShowSentinelDemo(false)}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-5">
+                <SentinelDemo />
+              </div>
             </div>
           </div>
         )}
 
         {copied && (
-          <div className="fixed bottom-4 right-4 bg-white text-black py-2 px-4 rounded shadow-lg transition-all duration-300" style={{ fontFamily: "'Roboto'" }}>
-            Process ID copied to clipboard!
+          <div
+            role="status"
+            className="fixed bottom-4 right-4 z-50 flex items-center gap-2 border border-phosphor bg-void px-4 py-3"
+          >
+            <span className="led" aria-hidden />
+            <span className="t-label">Process ID copied</span>
           </div>
         )}
-      </DotPatternHover>
+      </main>
       <Footer/>
     </div>
 

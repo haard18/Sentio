@@ -2,4 +2,392 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add this CSS to your global stylesheet or component-specific stylesheet */
+/* ============================================================
+   SENTIO — DESIGN SYSTEM
+   Dark substrate, hairline structure, one red accent used sparingly.
+   Square corners, no gradients, no soft shadows. Restraint over noise:
+   the technical feel comes from the grid and the type, not from effects.
+   ============================================================ */
+
+@layer base {
+  :root {
+    --bg: #0a0a0a;
+    --surface: #121212;
+    --surface-2: #171717;
+    --line: #262626;
+    --line-bright: #3d3d3d;
+    --fg: #eaeaea;
+    --fg-dim: #8a8a8a;
+    --fg-faint: #5a5a5a;
+    --accent: #e61919;
+    --accent-bright: #ff2a2a;
+    --signal: #4af626;
+
+    --gutter: clamp(1rem, 4vw, 4rem);
+  }
+
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 14px;
+    overflow-x: hidden;
+  }
+
+  /* A whisper of grain so large flat panels aren't perfectly digital.
+     No CRT scanlines — they read as costume rather than craft. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.018;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+    border-left: 1px solid var(--line);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-bright);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* --- MACRO TYPOGRAPHY ------------------------------------ */
+  .t-display {
+    font-family: "Archivo", "Helvetica Neue", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.028em;
+    line-height: 0.96;
+  }
+
+  .t-display-xl {
+    @apply t-display;
+    font-size: clamp(2.75rem, 7.5vw, 6rem);
+  }
+
+  .t-display-lg {
+    @apply t-display;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+  }
+
+  .t-display-md {
+    @apply t-display;
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  /* --- MICRO TYPOGRAPHY (telemetry) ------------------------ */
+  .t-meta {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+  }
+
+  /* Sentence case: labels are read, not shouted. */
+  .t-label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+
+  .t-body {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--fg-dim);
+    max-width: 62ch;
+  }
+
+  /* --- STRUCTURE ------------------------------------------- */
+  .shell {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Hairline grid: 1px gaps rendered by the parent's line color. */
+  .grid-hair {
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .grid-hair > * {
+    background: var(--bg);
+  }
+
+  .rule {
+    height: 1px;
+    width: 100%;
+    background: var(--line);
+    border: 0;
+  }
+
+  .rule-accent {
+    height: 2px;
+    width: 100%;
+    background: var(--accent);
+    border: 0;
+  }
+
+  /* Blueprint field — a faint structural hint, not graph paper. */
+  .blueprint {
+    background-image: linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 96px 96px;
+    background-position: -1px -1px;
+    mask-image: radial-gradient(ellipse at 30% 0%, #000, transparent 75%);
+  }
+
+  /* --- CONTROLS -------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    height: 3rem;
+    padding-inline: 1.5rem;
+    border: 1px solid var(--fg);
+    background: transparent;
+    color: var(--fg);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background-color 90ms linear, color 90ms linear,
+      border-color 90ms linear;
+  }
+  .btn:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    border-color: var(--line);
+    color: var(--fg-faint);
+    cursor: not-allowed;
+    background: transparent;
+  }
+
+  .btn-accent {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-accent:hover {
+    background: var(--accent-bright);
+    border-color: var(--accent-bright);
+    color: #fff;
+  }
+
+  .btn-ghost {
+    border-color: var(--line-bright);
+    color: var(--fg-dim);
+  }
+  .btn-ghost:hover {
+    background: transparent;
+    border-color: var(--fg);
+    color: var(--fg);
+  }
+
+  .btn-sm {
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    font-size: 0.6875rem;
+  }
+
+  /* --- PANELS ---------------------------------------------- */
+  .panel {
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+
+  /* --- FIELDS ---------------------------------------------- */
+  .field {
+    width: 100%;
+    height: 3rem;
+    padding-inline: 0.875rem;
+    background: var(--bg);
+    border: 1px solid var(--line-bright);
+    color: var(--fg);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+  }
+  .field::placeholder {
+    color: var(--fg-faint);
+    letter-spacing: 0.01em;
+    font-size: 0.8125rem;
+  }
+  .field:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+
+  /* --- STATUS ---------------------------------------------- */
+  .led {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    background: var(--signal);
+    box-shadow: 0 0 6px var(--signal);
+    animation: pulse-led 2.4s ease-in-out infinite;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--line-bright);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+  }
+  .tag-accent {
+    border-color: var(--accent);
+    color: var(--accent-bright);
+  }
+}
+
+/* Third-party: arweave-wallet-kit renders its own chrome. Cage it. */
+.wallet-cage button {
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--fg) !important;
+  font-family: "JetBrains Mono", ui-monospace, monospace !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  height: 2.5rem !important;
+  padding-inline: 1rem !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+.wallet-cage:hover {
+  background: var(--fg);
+}
+.wallet-cage:hover button {
+  color: var(--bg) !important;
+}
+
+@layer utilities {
+  .link-u {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-bright);
+    transition: border-color 90ms linear, color 90ms linear;
+  }
+  .link-u:hover {
+    color: var(--accent-bright);
+    border-color: var(--accent);
+  }
+
+  /* Marching-ants scan on hover for interactive rows. */
+  .row-scan {
+    position: relative;
+    transition: background-color 90ms linear;
+  }
+  .row-scan:hover {
+    background: var(--surface-2);
+  }
+  .row-scan::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 120ms linear;
+  }
+  .row-scan:hover::after {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes pulse-led {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  body::after {
+    display: none;
+  }
+}

@@ -1,97 +1,105 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import logo from "../assets/unnamed.png";
 import Wallet from "./Wallet-Button";
 
+const LINKS = [
+    { label: "Dashboard", to: "/dashboard", id: "01" },
+    { label: "Audit", to: "/offchain", id: "02" },
+    { label: "Faucet", to: "/faucets", id: "03" },
+    { label: "About", to: "/about", id: "04" },
+];
+
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const { pathname } = useLocation();
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
+    // Close the drawer whenever the route changes under it.
+    useEffect(() => setIsMenuOpen(false), [pathname]);
 
-    const navigateToFaucet = () => {
-        navigate("/faucets");
-        setIsMenuOpen(false); 
+    const go = (to: string) => {
+        navigate(to);
+        setIsMenuOpen(false);
     };
 
     return (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 w-full max-w-6xl z-50 px-4">
-            <nav className="border border-white/10 bg-black/50 text-white py-3 items-center backdrop-blur-xl rounded-none md:rounded-full">
-                <div className="mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center">
-                            <a href="/" className="flex items-center space-x-2">
-                                <div className="flex items-center">
-                                    <div className="w-8">
-                                        <img src={logo} alt="Logo" className="rounded-full" />
-                                    </div>
-                                </div>
-                                <span className="text-xl font-bold p-4">Sentio</span>
-                            </a>
-                        </div>
-                        {/* Hamburger Menu for Mobile */}
-                        <div className="md:hidden">
-                            <button
-                                onClick={toggleMenu}
-                                className="text-gray-50 hover:text-white focus:outline-none"
-                                aria-label="Toggle Menu"
-                            >
-                                <svg
-                                    className="w-6 h-6"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    {isMenuOpen ? (
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M6 18L18 6M6 6l12 12"
-                                        />
-                                    ) : (
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M4 6h16M4 12h16m-7 6h7"
-                                        />
-                                    )}
-                                </svg>
-                            </button>
-                        </div>
-                        {/* Desktop Links */}
-                        <div className="hidden md:block">
-                            <div className="flex items-center space-x-8">
-                                <button onClick={() => navigate("/about")} className="text-gray-50 hover:text-white">
-                                    About
-                                </button>
-                                <button onClick={navigateToFaucet} className="text-gray-50 hover:text-white">
-                                    Faucet
-                                </button>
-                                <Wallet />
-                            </div>
-                        </div>
-                    </div>
-                    {/* Mobile Menu */}
-                    {isMenuOpen && (
-                        <div className="md:hidden mt-2 bg-black/70 text-white rounded-lg border border-white/10 p-4 space-y-4">
-                            <button onClick={() => navigate("/about")} className="block text-left w-full text-gray-50 hover:text-white">
-                                About
-                            </button>
-                            <button onClick={navigateToFaucet} className="block text-left w-full text-gray-50 hover:text-white">
-                                Faucet
-                            </button>
-                            <Wallet />
-                        </div>
-                    )}
+        <header className="fixed top-0 left-0 right-0 z-50 border-b border-rule bg-void/95 backdrop-blur-sm">
+            <div className="flex h-14 items-stretch">
+                {/* Identity block */}
+                <a
+                    href="/"
+                    className="flex items-center gap-3 border-r border-rule px-4 sm:px-6 hover:bg-steel2 transition-colors"
+                >
+                    <img src={logo} alt="" className="h-6 w-6" />
+                    <span className="t-display text-lg">Sentio</span>
+                </a>
+
+                {/* Live telemetry readout — desktop only */}
+                <div className="hidden lg:flex items-center gap-2 border-r border-rule px-4">
+                    <span className="led" aria-hidden />
+                    <span className="t-meta">Net / AO Mainnet</span>
                 </div>
-            </nav>
-        </div>
+
+                <div className="flex-1" aria-hidden />
+
+                {/* Desktop nav */}
+                <nav className="hidden md:flex items-stretch">
+                    {LINKS.map((link) => {
+                        const active = pathname === link.to;
+                        return (
+                            <button
+                                key={link.to}
+                                onClick={() => go(link.to)}
+                                className={`group relative flex items-center gap-2 border-l border-rule px-5 t-label transition-colors ${
+                                    active
+                                        ? "bg-steel2 text-phosphor"
+                                        : "text-dim hover:bg-steel2 hover:text-phosphor"
+                                }`}
+                            >
+                                {active && (
+                                    <span className="absolute inset-x-0 top-0 h-0.5 bg-hazard" aria-hidden />
+                                )}
+                                {link.label}
+                            </button>
+                        );
+                    })}
+                </nav>
+
+                <div className="hidden md:flex items-center border-l border-rule px-3">
+                    <Wallet />
+                </div>
+
+                {/* Mobile toggle */}
+                <button
+                    onClick={() => setIsMenuOpen((v) => !v)}
+                    className="md:hidden ml-auto flex w-14 items-center justify-center border-l border-rule t-label text-phosphor"
+                    aria-label="Toggle menu"
+                    aria-expanded={isMenuOpen}
+                >
+                    {isMenuOpen ? "×" : "≡"}
+                </button>
+            </div>
+
+            {/* Mobile drawer */}
+            {isMenuOpen && (
+                <div className="md:hidden border-t border-rule bg-void">
+                    {LINKS.map((link) => (
+                        <button
+                            key={link.to}
+                            onClick={() => go(link.to)}
+                            className="row-scan flex w-full items-center gap-3 border-b border-rule px-4 py-4 t-label text-left text-dim"
+                        >
+                            {link.label}
+                        </button>
+                    ))}
+                    <div className="p-4">
+                        <Wallet />
+                    </div>
+                </div>
+            )}
+        </header>
     );
 };
 

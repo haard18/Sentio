@@ -1,10 +1,5 @@
 import React from 'react';
-import { FaCode, FaBug, FaCheckCircle, FaSkull } from 'react-icons/fa';
-import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useNavigate } from 'react-router-dom';
-
-ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface Vulnerability {
   description: string;
@@ -41,9 +36,8 @@ const computeReportStats = (report: Report): ReportStats | null => {
   }
 
   const vulnerabilities = report.vulnerabilities;
-  const highSeverityItems = vulnerabilities.filter(item => item.severity.toLowerCase() === 'high');
-  const mediumSeverityItems = vulnerabilities.filter(item => item.severity.toLowerCase() === 'medium');
-  const lowSeverityItems = vulnerabilities.filter(item => item.severity.toLowerCase() === 'low');
+  const bySeverity = (s: string) =>
+    vulnerabilities.filter(item => item.severity?.toLowerCase() === s).length;
 
   const totalLinesOfCode = report.total_lines || 0;
   const uniqueVulnerableLines = report.vulnerable_lines || 0;
@@ -51,18 +45,21 @@ const computeReportStats = (report: Report): ReportStats | null => {
     ? ((uniqueVulnerableLines / totalLinesOfCode) * 100).toFixed(2)
     : '0';
 
+  const named = (...names: string[]) =>
+    vulnerabilities.some(v => names.includes(v.name?.toLowerCase()));
+
   const threatChecklist = [
-    { label: 'Does the code allow reentrancy?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'reentrancy') },
-    { label: 'Is there a floating pragma issue?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'floating pragma') },
-    { label: 'Are there unchecked external calls?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'unchecked external calls') },
-    { label: 'Does the code have integer overflow or underflow vulnerabilities?', exists: vulnerabilities.some(vul => ['integer overflow', 'integer underflow'].includes(vul.name.toLowerCase())) },
-    { label: 'Is there a denial of service vulnerability?', exists: vulnerabilities.some(vul => vul.name.toLowerCase() === 'denial of service') },
+    { label: 'Reentrancy permitted', exists: named('reentrancy') },
+    { label: 'Floating pragma', exists: named('floating pragma') },
+    { label: 'Unchecked external calls', exists: named('unchecked external calls') },
+    { label: 'Integer overflow / underflow', exists: named('integer overflow', 'integer underflow') },
+    { label: 'Denial of service', exists: named('denial of service') },
   ];
 
   return {
-    highSeverity: highSeverityItems.length,
-    mediumSeverity: mediumSeverityItems.length,
-    lowSeverity: lowSeverityItems.length,
+    highSeverity: bySeverity('high'),
+    mediumSeverity: bySeverity('medium'),
+    lowSeverity: bySeverity('low'),
     totalLinesOfCode,
     uniqueVulnerableLines,
     vulnerableCodePercentage,
@@ -70,33 +67,50 @@ const computeReportStats = (report: Report): ReportStats | null => {
   };
 };
 
+/* Severity drives colour only through the accent + phosphor scale —
+   no green/amber/red traffic light, which would break the palette. */
+const severityClass = (severity: string) => {
+  switch (severity?.toLowerCase()) {
+    case 'high':
+      return 'border-hazard text-hazard2';
+    case 'medium':
+      return 'border-rule2 text-phosphor';
+    default:
+      return 'border-rule text-dim';
+  }
+};
+
 const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
   const navigate = useNavigate();
-  
+  const reportStats = computeReportStats(report);
+
   const handleCertificate = () => {
     navigate('/certificates', { state: { report, reportStats } });
   };
 
-  const reportStats = computeReportStats(report);
   if (!reportStats) {
     return (
-      <div className="min-h-[50vh] flex flex-col justify-between bg-[#1E1E1E] text-white p-6 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold mb-4">Security Assessment</h2>
-        <p className="text-lg text-green-500">
-          Congratulations! No vulnerabilities were found in this codebase. 🎉
-        </p>
-        <div className="mt-6 flex justify-between">
-          <button
-            className="bg-[#3b3f5c] gradient-button text-sm px-4 py-2 rounded-xl"
-            onClick={onGoBack}
-          >
-            Go Back
+      <div className="panel mx-auto max-w-3xl">
+        <div className="panel-head">
+          <span className="t-label">Security assessment</span>
+          
+        </div>
+        <div className="p-8 text-center">
+          <div className="flex items-center justify-center gap-2">
+            <span className="led" aria-hidden />
+            <span className="t-meta text-signal">No findings</span>
+          </div>
+          <h2 className="t-display-md mt-4">Zero vulnerabilities</h2>
+          <p className="t-body mx-auto mt-3">
+            Static analysis returned no findings for this source. You are clear to
+            proceed.
+          </p>
+        </div>
+        <div className="flex flex-col gap-3 border-t border-rule p-5 sm:flex-row sm:justify-between">
+          <button className="btn btn-ghost" onClick={onGoBack}> Go back
           </button>
-          <button
-            className="bg-purple-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-purple-600 transition duration-300"
-            onClick={handleCertificate}
-          >
-            Generate Security Certificate
+          <button className="btn btn-accent" onClick={handleCertificate}>
+            Generate certificate
           </button>
         </div>
       </div>
@@ -113,120 +127,142 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onGoBack }) => {
     threatChecklist,
   } = reportStats;
 
-  const data = {
-    labels: ['High', 'Medium', 'Low'],
-    datasets: [{
-      data: [highSeverity, mediumSeverity, lowSeverity],
-      backgroundColor: ['#f87171', '#fbbf24', '#34d399'],
-    }],
-    borderWidth: 0, 
-    hoverBorderWidth: 0,
-    borderColor: 'black',
-  };
-  
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  };
+  const totalFindings = highSeverity + mediumSeverity + lowSeverity;
+  const pct = (n: number) => (totalFindings ? (n / totalFindings) * 100 : 0);
 
   return (
-    <div className="min-h-[50vh] flex flex-col justify-between bg-[#1E1E1E] text-white p-6 rounded-xl shadow-lg">
-      {/* Report Header */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Summary + Security Assessment</h2>
-          <button className="bg-[#3b3f5c] gradient-button text-sm px-4 py-2 rounded-xl" onClick={onGoBack}>
-            Go Back
+    <div className="mx-auto max-w-5xl">
+      {/* Masthead */}
+      <div className="border border-rule">
+        <div className="panel-head">
+          <div className="flex items-center gap-3">
+            <span className="t-label">Audit report</span>
+            
+          </div>
+          <button className="btn btn-sm btn-ghost" onClick={onGoBack}> Back
           </button>
         </div>
 
-        {/* Code Analysis Summary */}
-        <div className="flex flex-col sm:flex-row sm:space-x-4 mb-4">
-          <div className="flex-1 bg-[#2E2E2E] p-4 rounded-xl shadow-md mb-4 sm:mb-0">
-            <h3 className="text-xl font-semibold mb-2">Code Analysis Summary</h3>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <FaCode className="text-purple-500" />
-                <div className="text-white text-lg">Total Lines of Code: <strong>{totalLinesOfCode}</strong></div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <FaBug className="text-red-500" />
-                <div className="text-white text-lg">Lines with Vulnerabilities: <strong>{uniqueVulnerableLines}</strong></div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <FaCheckCircle className="text-green-500" />
-                <div className="text-white text-lg">Vulnerable Code Percentage: <strong>{vulnerableCodePercentage}%</strong></div>
-              </div>
+        {/* Headline metrics */}
+        <dl className="grid-hair grid-cols-2 border-0 lg:grid-cols-4">
+          {[
+            ['Total lines', String(totalLinesOfCode)],
+            ['Vulnerable lines', String(uniqueVulnerableLines)],
+            ['Vulnerable %', `${vulnerableCodePercentage}%`],
+            ['Findings', String(totalFindings)],
+          ].map(([k, v]) => (
+            <div key={k} className="p-5">
+              <dt className="t-meta">{k}</dt>
+              <dd className="t-display mt-2 text-4xl tabular-nums">{v}</dd>
             </div>
-          </div>
-
-          {/* Vulnerabilities Discovered */}
-          <div className="flex-1 bg-[#2E2E2E] p-4 rounded-xl shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Vulnerabilities Discovered</h3>
-            <div className="flex flex-col sm:flex-row sm:space-x-4 items-center sm:items-start">
-              <div className="w-full sm:w-1/2">
-                <Doughnut data={data} options={options} />
-              </div>
-              <div className="w-full sm:w-1/2 sm:ml-4 space-y-2">
-                <div className="flex flex-col items-center gap-4 space-x-2">
-                  <div className='flex justify-center gap-4 items-center'>
-                    <FaCheckCircle className="text-green-500" />
-                    <p className='bg-green-500 rounded-xl px-2 py-1'>
-                      {lowSeverity} Low
-                    </p>
-                  </div>
-                  <div className='flex justify-center gap-4 items-center'>
-                    <FaBug className="text-yellow-500" />
-                    <p className='bg-yellow-500 rounded-xl px-2 py-1'>
-                      {mediumSeverity} Medium
-                    </p>
-                  </div>
-                  <div className='flex justify-center gap-4 items-center'>
-                    <FaSkull className="text-red-500" />
-                    <p className='bg-red-500 rounded-xl px-2 py-1'>
-                      {highSeverity} High
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Threat Model */}
-        <div className="bg-[#2E2E2E] p-4 rounded-xl shadow-md">
-          <h3 className="text-xl font-semibold mb-2 bg-slate-700 px-4 py-1 rounded-xl">Generated Threat Model</h3>
-          <ul className="text-gray-300 text-sm pl-5">
-            {threatChecklist.map((check, index) => (
-              <li key={index}>
-                {check.exists ? <span className="text-red-500">✔️</span> : <span className="text-green-500">✖️</span>} {check.label}
-              </li>
-            ))}
-          </ul>
-        </div>
+          ))}
+        </dl>
       </div>
 
-      {/* Action Buttons */}
-      {(highSeverity > 0 || mediumSeverity > 0) && (
-        <div className="mt-6 flex justify-between">
-          <button
-            className="bg-[#3b3f5c] gradient-button text-sm px-4 py-2 rounded-xl"
-            onClick={onGoBack}
-          >
-            Go Back
-          </button>
-          <button
-            className="bg-purple-500 gradient-button text-white px-6 py-2 rounded-xl hover:bg-purple-600 transition duration-300"
-            onClick={handleCertificate}
-          >
-            Generate Security Certificate
-          </button>
+      {/* Severity distribution — stacked hard bar, no doughnut. */}
+      <section className="panel mt-4">
+        <div className="panel-head">
+          <span className="t-label">Severity distribution</span>
+          <span className="t-meta text-faint">
+            {String(totalFindings).padStart(2, '0')} total
+          </span>
         </div>
-      )}
+        <div className="p-5">
+          <div className="flex h-8 w-full border border-rule">
+            <div style={{ width: `${pct(highSeverity)}%` }} className="bg-hazard" title={`${highSeverity} high`} />
+            <div style={{ width: `${pct(mediumSeverity)}%` }} className="bg-phosphor" title={`${mediumSeverity} medium`} />
+            <div style={{ width: `${pct(lowSeverity)}%` }} className="bg-rule2" title={`${lowSeverity} low`} />
+          </div>
+          <dl className="mt-4 grid grid-cols-3 gap-4">
+            {[
+              ['High', highSeverity, 'bg-hazard'],
+              ['Medium', mediumSeverity, 'bg-phosphor'],
+              ['Low', lowSeverity, 'bg-rule2'],
+            ].map(([label, count, swatch]) => (
+              <div key={label as string} className="border-t border-rule pt-2">
+                <dt className="t-meta flex items-center gap-2">
+                  <span className={`h-2 w-2 ${swatch}`} aria-hidden />
+                  {label}
+                </dt>
+                <dd className="t-display mt-1 text-2xl tabular-nums">
+                  {String(count).padStart(2, '0')}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* Findings register — previously not surfaced at all. */}
+      <section className="panel mt-4">
+        <div className="panel-head">
+          <span className="t-label">Findings register</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] border-collapse">
+            <thead>
+              <tr className="border-b border-rule bg-steel2">
+                {['ID', 'Severity', 'Name', 'Line', 'Description'].map(h => (
+                  <th key={h} className="t-meta px-4 py-2 text-left font-normal">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {report.vulnerabilities.map((v, i) => (
+                <tr key={i} className="row-scan border-b border-rule align-top">
+                  <td className="t-meta px-4 py-3 text-faint">
+                    {String(i + 1).padStart(2, '0')}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`tag ${severityClass(v.severity)}`}>{v.severity}</span>
+                  </td>
+                  <td className="t-label px-4 py-3 text-phosphor">{v.name}</td>
+                  <td className="px-4 py-3 font-mono text-xs tabular-nums text-dim">
+                    L{v.line}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs leading-relaxed text-dim">
+                    {v.description}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Threat model */}
+      <section className="panel mt-4">
+        <div className="panel-head">
+          <span className="t-label">Generated threat model</span>
+        </div>
+        <dl className="p-5">
+          {threatChecklist.map((check, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between gap-4 border-b border-rule py-2.5 last:border-0"
+            >
+              <dt className="t-label text-dim">{check.label}</dt>
+              <dd
+                className={`t-meta shrink-0 ${
+                  check.exists ? 'text-hazard2' : 'text-signal'
+                }`}
+              >
+                {check.exists ? '[DETECTED]' : '[CLEAR]'}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <div className="mt-4 flex flex-col gap-3 border border-rule p-5 sm:flex-row sm:justify-between">
+        <button className="btn btn-ghost" onClick={onGoBack}> Go back
+        </button>
+        <button className="btn btn-accent" onClick={handleCertificate}>
+          Generate certificate
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 const Webhook: React.FC = () => {
   const [userName, setUserName] = useState<string>("");
@@ -102,36 +103,44 @@ const Webhook: React.FC = () => {
   }, [accessToken]);
 
   return (
-    <div className="h-screen flex app-background flex-col text-white">
+    <div className="flex min-h-screen flex-col bg-void text-phosphor">
       <Navbar />
-      <div className="flex-grow flex items-center justify-center">
-        <div className="p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-4">Set GitHub Webhook</h2>
-          {!accessToken ? (
-            <button
-              onClick={handleGitHubAuth}
-              className="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded mb-4"
-            >
-              Authenticate with GitHub
-            </button>
-          ) : (
-            <>
-              {repos.length > 0 ? (
-                <div className="flex flex-col gap-4">
-                  <input
-                    type="text"
-                    value={userName}
-                    readOnly
-                    className="p-3 bg-gray-700 rounded"
-                  />
+
+      <main className="mt-14 flex flex-1 items-start justify-center px-4 py-16">
+        <section className="panel w-full max-w-lg">
+          <div className="panel-head">
+            <span className="t-label">GitHub webhook</span>
+            
+          </div>
+
+          <div className="space-y-5 p-5">
+            {!accessToken ? (
+              <>
+                <p className="t-body">
+                  Authorise Sentio to install a push webhook on your repository. Audits
+                  then run automatically on every commit.
+                </p>
+                <button onClick={handleGitHubAuth} className="btn btn-accent w-full">
+                  Authenticate with GitHub
+                </button>
+              </>
+            ) : repos.length > 0 ? (
+              <>
+                <div>
+                  <span className="t-meta">01 / Account</span>
+                  <input type="text" value={userName} readOnly className="field mt-2 text-dim" />
+                </div>
+
+                <label className="block">
+                  <span className="t-meta">02 / Repository</span>
                   <select
                     value={selectedRepo}
                     onChange={(e) => setSelectedRepo(e.target.value)}
-                    className="p-3 bg-gray-700 rounded"
+                    className="field mt-2"
                     required
                   >
                     <option value="" disabled>
-                      Select a Repository
+                      Select a repository
                     </option>
                     {repos.map((repo) => (
                       <option key={repo} value={repo}>
@@ -139,33 +148,45 @@ const Webhook: React.FC = () => {
                       </option>
                     ))}
                   </select>
+                </label>
+
+                <label className="block">
+                  <span className="t-meta">03 / Alert Email</span>
                   <input
                     type="email"
-                    value={userEmail} // Changed to userEmail
-                    onChange={(e) => setUserEmail(e.target.value)} // Changed to setUserEmail
-                    className="p-3 bg-gray-700 rounded"
-                    placeholder="Enter your email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    className="field mt-2"
+                    placeholder="you@domain.com"
                     required
                   />
-                  <button
-                    onClick={handleSetWebhook}
-                    className="bg-purple-500 hover:bg-purple-700 text-white p-3 rounded"
-                    disabled={loading}
-                  >
-                    {loading ? "Setting Webhook..." : "Set Webhook"}
-                  </button>
-                  {message && <p className="mt-4">{message}</p>}
-                </div>
-              ) : (
-                <div className="flex justify-center items-center">
-                  <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
-                  <p className="ml-4">Loading repositories...</p>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+                </label>
+
+                <button
+                  onClick={handleSetWebhook}
+                  className="btn btn-accent w-full"
+                  disabled={loading}
+                >
+                  {loading ? "Installing…" : "Set webhook"}
+                </button>
+
+                {message && (
+                  <p className="border border-rule2 px-3 py-2 t-label text-dim" role="status">
+                    {message}
+                  </p>
+                )}
+              </>
+            ) : (
+              <div className="flex items-center gap-3 py-6">
+                <span className="led" aria-hidden />
+                <span className="t-label text-dim">Loading repositories…</span>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 };

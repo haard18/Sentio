@@ -19,34 +19,60 @@ const Sentinel: React.FC<SentinelProps> = ({ processes, onClose, onSpawnSentinel
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-      <div className="bg-black rounded-lg p-5 w-96 h-96 flex flex-col">
-        <h2 className="text-xl font-bold mb-4">Spawn Sentinel</h2>
-        <div className="flex flex-col space-y-4 overflow-y-auto mb-4">
-          {processes.map(process => (
-            <div
-              key={process.id}
-              className={`p-4 rounded-lg cursor-pointer transition duration-300 
-                          ${selectedProcessId === process.id ? 'bg-[#9966ff] text-white' : 'bg-gray-700 text-white'}`}
-              onClick={() => setSelectedProcessId(process.id)}
-            >
-              {process.id}
-            </div>
-          ))}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-void/90 p-4"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="panel flex max-h-[80vh] w-full max-w-md flex-col">
+        <div className="panel-head">
+          <span className="t-label">Spawn sentinel</span>
+          <button onClick={onClose} className="t-label text-dim hover:text-hazard2" aria-label="Close">
+            ×
+          </button>
         </div>
-        <div className="flex justify-between">
-          <button
-            className="px-4 py-2 bg-[#9966ff] text-black rounded"
-            onClick={handleSpawn}
-            disabled={!selectedProcessId} // Disable button if no process is selected
-          >
-            Spawn Sentinel
+
+        <p className="t-meta border-b border-rule px-4 py-2">
+          Select the process to watch
+        </p>
+
+        <div className="flex-1 overflow-y-auto">
+          {processes.length === 0 ? (
+            <p className="t-meta p-4 text-faint">No processes available</p>
+          ) : (
+            processes.map((process) => {
+              const selected = selectedProcessId === process.id;
+              return (
+                <button
+                  key={process.id}
+                  onClick={() => setSelectedProcessId(process.id)}
+                  className={`flex w-full items-center gap-3 border-b border-rule px-4 py-3 text-left transition-colors ${
+                    selected ? 'bg-steel2' : 'hover:bg-steel2'
+                  }`}
+                >
+                  <span
+                    className={`h-2 w-2 shrink-0 ${selected ? 'bg-hazard' : 'bg-rule2'}`}
+                    aria-hidden
+                  />
+                  <span className="break-all font-mono text-xs text-phosphor">
+                    {process.id}
+                  </span>
+                </button>
+              );
+            })
+          )}
+        </div>
+
+        <div className="flex gap-3 border-t border-rule p-4">
+          <button className="btn btn-ghost flex-1" onClick={onClose}>
+            Close
           </button>
           <button
-            className="ml-2 px-4 py-2 bg-gray-500 text-white rounded"
-            onClick={onClose}
+            className="btn btn-accent flex-1"
+            onClick={handleSpawn}
+            disabled={!selectedProcessId}
           >
-            Close
+            Spawn
           </button>
         </div>
       </div>

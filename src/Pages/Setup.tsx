@@ -89,141 +89,190 @@ const SetupPage: React.FC = () => {
         navigate('/dashboard')
     };  
 
+    const STEP_COPY = [
+        'Install the Sentinel software on your system.',
+        'Launch the Sentinel and configure initial settings.',
+        'Monitor and review Sentinel activity.',
+    ];
+
     return (
-        <div className='app-background min-h-screen text-white flex flex-col'>
-            <header className="navbar flex justify-center py-4 shadow-md ">
-                <Navbar />
+        <div className='flex min-h-screen flex-col bg-void text-phosphor'>
+            <Navbar />
+
+            <header className='mt-14 border-b border-rule'>
+                <div className='shell py-12'>
+                    <span className='t-meta text-hazard'>Provisioning</span>
+                    <h1 className='t-display-lg mt-3'>Sentinel setup</h1>
+
+                    <dl className='mt-8 max-w-2xl border-t border-rule'>
+                        <div className='flex flex-col gap-1 border-b border-rule py-3 sm:flex-row sm:justify-between sm:gap-4'>
+                            <dt className='t-meta'>Target Process</dt>
+                            <dd className='break-all font-mono text-xs text-phosphor'>
+                                {processId || 'N/A'}
+                            </dd>
+                        </div>
+                        <div className='flex flex-col gap-1 border-b border-rule py-3 sm:flex-row sm:justify-between sm:gap-4'>
+                            <dt className='t-meta'>Sentinel ID</dt>
+                            <dd className='break-all font-mono text-xs'>
+                                {sentinelId
+                                    ? <span className='text-phosphor'>{sentinelId}</span>
+                                    : <span className='text-faint'>Not spawned</span>}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
             </header>
 
-            <main className='flex-grow container mx-auto px-6 md:px-10 py-20 w-[1/3]'>
-                <section className='rounded-xl bg-gray-800 bg-opacity-70 p-8 shadow-lg mb-12 text-center md:text-left'>
-                    <h1 className='text-4xl font-extrabold text-white mb-4'>
-                        Sentinel Setup Process
-                    </h1>
-                    <p className='text-lg text-gray-300'>
-                        Your process ID is: <span className='font-mono text-[#9966ff]'>{processId || 'N/A'}</span>
-                    </p>
-                    {sentinelId && <p className='text-lg text-gray-300'>
-                        Your Sentinel ID is: <span className='font-mono text-[#9966ff]'>{sentinelId || 'N/A'}</span>
-                    </p>}
+            <main className='shell grid flex-1 gap-6 py-10 lg:grid-cols-[320px_1fr] lg:items-start'>
+                {/* Install progress */}
+                <section className='panel'>
+                    <div className='panel-head'>
+                        <span className='t-label'>Install progress</span>
+                        <span className='t-meta text-faint'>
+                            {currentStep}/{totalSteps}
+                        </span>
+                    </div>
+                    <div className='p-5'>
+                        <div className='flex gap-1'>
+                            {[...Array(totalSteps)].map((_, index) => (
+                                <div
+                                    key={index}
+                                    className={`h-2 flex-1 transition-colors duration-500 ${
+                                        index < currentStep ? 'bg-hazard' : 'bg-rule'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                        <ol className='mt-5 border-t border-rule'>
+                            {STEP_COPY.map((copy, i) => {
+                                const done = i + 1 < currentStep;
+                                const active = i + 1 === currentStep;
+                                return (
+                                    <li key={i} className='border-b border-rule py-3'>
+                                        <div className='flex items-baseline gap-2'>
+                                            <span className={`t-meta ${done ? 'text-signal' : active ? 'text-hazard' : 'text-faint'}`}>
+                                                {done ? '●' : active ? '◐' : '○'}
+                                            </span>
+                                            <span className={`t-label ${active ? 'text-phosphor' : 'text-dim'}`}>
+                                                Step {i + 1}
+                                            </span>
+                                        </div>
+                                        <p className='t-meta mt-1 normal-case tracking-normal'>{copy}</p>
+                                    </li>
+                                );
+                            })}
+                        </ol>
+                    </div>
                 </section>
 
-                <section className='rounded-xl bg-gray-800 bg-opacity-70 p-6 shadow-md mb-8'>
-                    <h2 className='text-3xl font-semibold text-gray-100 mb-6 text-center'>
-                        Installation Progress
-                    </h2>
-                    <div className='flex items-center space-x-4 mb-8'>
-                        {[...Array(totalSteps)].map((_, index) => (
-                            <div
-                                key={index}
-                                className={`flex-1 h-4 rounded-full transition-all duration-1000 ${index < currentStep ? 'bg-[#9966ff]' : 'bg-gray-600'}`}
-                            ></div>
-                        ))}
+                {/* Configuration */}
+                <section className='panel'>
+                    <div className='panel-head'>
+                        <span className='t-label'>Configure sentinel</span>
+                        
                     </div>
 
-                    <div className='text-lg font-semibold text-gray-200 text-center mt-6'>
-                        {currentStep === 1 && <p>Step 1: Install the Sentinel software on your system.</p>}
-                        {currentStep === 2 && <p>Step 2: Launch the Sentinel and configure initial settings.</p>}
-                        {currentStep === 3 && <p>Step 3: Monitor and review Sentinel activity.</p>}
-                    </div>
-                </section>
-
-                <section className='rounded-xl bg-gray-800 bg-opacity-70 p-6 shadow-md flex justify-center'>
-                    <div className="text-center w-full max-w-lg bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg p-6">
-                        <h2 className='text-3xl font-semibold text-gray-100 mb-4'>Configure Sentinel</h2>
-                        <form className="bg-transparent p-4 rounded-lg grid grid-cols-1 gap-4">
-                            {!sentinelId && <div className='flex items-center justify-between mb-4'>
-                                <div className="w-1/2">
-                                    <label htmlFor="time-select" className='text-lg text-gray-300 mr-[74%]'>Interval:</label>
+                    <form className='space-y-6 p-5' onSubmit={(e) => e.preventDefault()}>
+                        {!sentinelId && (
+                            <div className='flex flex-col gap-3 sm:flex-row sm:items-end'>
+                                <label className='flex-1'>
+                                    <span className='t-meta'>01 / Scan Interval</span>
                                     <select
-                                        id="time-select"
+                                        id='time-select'
                                         value={selectedTime}
                                         onChange={handleTimeChange}
-                                        className='w-full p-2 bg-gray-700 text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9966ff]'
+                                        className='field mt-2'
                                     >
-                                        <option value="1-minutes">1 min</option>
-                                        <option value="3-minutes">3 min</option>
-                                        <option value="5-minutes">5 min</option>
-                                        <option value="10-minutes">10 min</option>
+                                        <option value='1-minutes'>1 min</option>
+                                        <option value='3-minutes'>3 min</option>
+                                        <option value='5-minutes'>5 min</option>
+                                        <option value='10-minutes'>10 min</option>
                                     </select>
-                                </div>
+                                </label>
                                 <button
-                                    type="button"
+                                    type='button'
                                     onClick={handleSpawnSentinel}
-                                    className='ml-4 px-6 py-2 gradient-button text-white rounded-xl mt-7'
-                                    disabled={!!sentinelId}
+                                    className='btn btn-accent'
                                 >
                                     Spawn Sentinel
                                 </button>
-                            </div>}
+                            </div>
+                        )}
 
-                            <div className="mb-4">
-                                <h3 className='text-lg text-gray-300 mr-[74%]'>Tags:</h3>
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {tags.map((tag, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center bg-[#9966ff] text-white rounded-full px-4 py-2 space-x-2"
-                                        >
-                                            <span>{tag}</span>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveTag(index)}
-                                                className="text-white text-sm font-bold hover:text-gray-300"
-                                            >
-                                                &times;
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
+                        <div className='rule' />
+
+                        <div>
+                            <span className='t-meta'>02 / Watch Tags</span>
+                            <div className='mt-2 flex flex-wrap gap-2'>
+                                {tags.filter(Boolean).length === 0 ? (
+                                    <span className='t-meta text-faint'>No tags added</span>
+                                ) : (
+                                    tags.map((tag, index) =>
+                                        tag ? (
+                                            <span key={index} className='tag'>
+                                                {tag}
+                                                <button
+                                                    type='button'
+                                                    onClick={() => handleRemoveTag(index)}
+                                                    className='text-dim hover:text-hazard2'
+                                                    aria-label={`Remove ${tag}`}
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        ) : null
+                                    )
+                                )}
+                            </div>
+                            <div className='mt-3 flex gap-2'>
                                 <input
-                                    type="text"
-                                    placeholder="New tag"
+                                    type='text'
+                                    placeholder='New tag'
                                     value={tags[tags.length - 1] || ''}
                                     onChange={(e) => handleTagChange(tags.length - 1, e)}
-                                    className='w-full p-2 mb-2 bg-gray-700 text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9966ff]'
+                                    className='field'
                                 />
-                                <button
-                                    type="button"
-                                    onClick={handleAddTag}
-                                    className='px-4 py-2 gradient-button  text-white rounded-xl'
-                                >
-                                    Add Tag
+                                <button type='button' onClick={handleAddTag} className='btn btn-ghost'>
+                                    Add
                                 </button>
                             </div>
+                        </div>
 
-                            <div className="mb-4 flex flex-col items-center">
-                                <div className="flex items-center mb-2">
-                                    <input
-                                        type="checkbox"
-                                        id="email-confirm"
-                                        checked={isEmailConfirmed}
-                                        onChange={(e) => setIsEmailConfirmed(e.target.checked)}
-                                        className='mr-2'
-                                    />
-                                    <label htmlFor="email-confirm" className='text-sm text-gray-300'>I want to receive updates via email</label>
-                                </div>
+                        <div className='rule' />
 
+                        <div>
+                            <span className='t-meta'>03 / Alert Channel</span>
+                            <label className='mt-2 flex cursor-pointer items-center gap-2'>
                                 <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className='w-full p-2 bg-gray-700 text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9966ff]'
+                                    type='checkbox'
+                                    id='email-confirm'
+                                    checked={isEmailConfirmed}
+                                    onChange={(e) => setIsEmailConfirmed(e.target.checked)}
+                                    className='h-3 w-3 accent-[#E61919]'
                                 />
-                            </div>
+                                <span className='t-label text-dim'>Receive updates via email</span>
+                            </label>
+                            <input
+                                type='email'
+                                placeholder='you@domain.com'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                disabled={!isEmailConfirmed}
+                                className='field mt-3 disabled:opacity-40'
+                            />
+                        </div>
 
-                            <button
-                                type="button"
-                                onClick={configureSentinel}
-                                className='w-full py-2 mt-2 gradient-button text-white rounded-xl'
-                            >
-                                Configure Sentinel
-                            </button>
-                        </form>
-                    </div>
+                        <button
+                            type='button'
+                            onClick={configureSentinel}
+                            className='btn btn-accent w-full'
+                        >
+                            Configure Sentinel
+                        </button>
+                    </form>
                 </section>
             </main>
+
             <Footer />
         </div>
     );

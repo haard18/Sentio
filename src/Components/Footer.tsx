@@ -1,84 +1,88 @@
 import { FaTwitter, FaEnvelope } from "react-icons/fa";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+
+const COLUMNS = [
+    {
+        id: "A",
+        title: "Contact",
+        items: [
+            { label: "Email", href: "mailto:connectsentio@gmail.com", icon: FaEnvelope },
+            { label: "Twitter", href: "https://twitter.com/sentio_AR", icon: FaTwitter },
+        ],
+    },
+    {
+        id: "B",
+        title: "Resources",
+        items: [
+            { label: "Documentation", href: "https://sentio-docs.vercel.app/" },
+            { label: "Help Center", href: "mailto:connectsentio@gmail.com" },
+        ],
+    },
+    {
+        id: "C",
+        title: "Systems",
+        items: [
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Audit", href: "/offchain" },
+            { label: "Faucet", href: "/faucets" },
+        ],
+    },
+];
 
 const Footer = () => {
     return (
-        <footer className="border-t border-white/10 bg-black/50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="flex flex-col sm:flex-row sm:justify-between items-center text-center sm:text-left text-sm space-y-6 sm:space-y-0">
-                    {/* Contact Section */}
-                    <div className="space-y-2">
-                        <h3 className="font-semibold text-white">Contact</h3>
-                        <ul className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 justify-center sm:justify-start">
-                            <li>
-                                <a
-                                    href="mailto:connectsentio@gmail.com"
-                                    className="text-gray-400 hover:text-white flex items-center"
-                                >
-                                    <FaEnvelope className="mr-1" /> Email
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://twitter.com/sentio_AR"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-white flex items-center"
-                                >
-                                    <FaTwitter className="mr-1" /> Twitter
-                                </a>
-                            </li>
-{/*                             <li>
-                                <a
-                                    href="https://github.com/haard18/sentio"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-white flex items-center"
-                                >
-                                    <FaGithub className="mr-1" /> GitHub
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://arweaveindia.com/projects/sentio"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-white flex items-center"
-                                >
-                                    <FontAwesomeIcon icon={faUpRightFromSquare} className="mr-1" /> Arweave
-                                </a>
-                            </li> */}
-                        </ul>
+        <footer className="relative border-t border-rule bg-void">
+            <div className="shell py-14">
+                <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+                    {/* Wordmark block */}
+                    <div>
+                        <div className="t-display-md leading-none">
+                            Sentio<span className="text-hazard">.</span>
+                        </div>
+                        <p className="t-meta mt-4 leading-relaxed">
+                            Security telemetry
+                            <br />
+                            for the AO compute layer
+                        </p>
+                        <div className="mt-6 flex items-center gap-2">
+                            <span className="led" aria-hidden />
+                            <span className="t-meta">All systems nominal</span>
+                        </div>
                     </div>
 
-                    {/* Resources Section */}
-                    <div className="space-y-2">
-                        <h3 className="font-semibold text-white">Resources</h3>
-                        <ul className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 justify-center sm:justify-start">
-                            <li>
-                                <a
-                                    href="https://docs_sentio-app.ar-io.dev"
-                                    className="text-gray-400 hover:text-white"
-                                >
-                                    Documentation
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="mailto:connectsentio@gmail.com"
-                                    className="text-gray-400 hover:text-white"
-                                >
-                                    Help Center
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    {COLUMNS.map((col) => (
+                        <nav key={col.id}>
+                            <div className="flex items-baseline gap-2 border-b border-rule pb-2">
+                                <span className="t-meta text-faint">{col.id}</span>
+                                <h3 className="t-label text-phosphor">{col.title}</h3>
+                            </div>
+                            <ul className="mt-4 space-y-2">
+                                {col.items.map((item) => (
+                                    <li key={item.label}>
+                                        <a
+                                            href={item.href}
+                                            target={item.href.startsWith("http") ? "_blank" : undefined}
+                                            rel="noopener noreferrer"
+                                            className="group inline-flex items-center gap-2 t-label text-dim hover:text-hazard2 transition-colors"
+                                        >
+                                            <span className="text-faint group-hover:text-hazard">
+                                                {">"}
+                                            </span>
+                                            {item.label}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+                    ))}
                 </div>
+            </div>
 
-                {/* Bottom Section */}
-                <div className="mt-6 border-t border-white/10 pt-6 text-gray-400 text-center text-xs">
-                    © {new Date().getFullYear()} Sentio. All rights reserved.
+            <div className="border-t border-rule">
+                <div className="shell flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="t-meta">
+                        © {new Date().getFullYear()} Sentio. All rights reserved.
+                    </p>
+                    <p className="t-meta text-faint">Built on Arweave &amp; AO</p>
                 </div>
             </div>
         </footer>

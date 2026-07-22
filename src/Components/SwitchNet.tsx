@@ -25,17 +25,18 @@ const SwitchNet: React.FC = () => {
         }
     };
 
+    // Tabs are flat panels; the active one is marked by a red rule, not a fill.
     const tabButtonVariants = {
-        active: { scale: 1.05, backgroundColor: '#6C3AE1' }, // Purple for active tab
-        inactive: { scale: 1, backgroundColor: 'gray' }, // Darker purple for inactive
+        active: { backgroundColor: '#171717', color: '#EAEAEA' },
+        inactive: { backgroundColor: '#0A0A0A', color: '#8A8A8A' },
     };
 
     return (
-        <div className="w-full max-w-5xl mx-auto p-6  flex flex-col" style={{fontFamily:"'Amaranth'"}}>
+        <div className="w-full max-w-5xl mx-auto p-6 flex flex-col">
             {/* Tab Selection at the Top */}
-            <div className="flex justify-center mb-4">
+            <div className="flex border border-rule">
                 <motion.button
-                    className="flex-1 py-2 text-white font-semibold rounded-l-xl focus:outline-none bg-gray-700"
+                    className="relative flex-1 border-r border-rule py-3 t-label focus:outline-none"
                     onClick={() => handleTabChange('security')}
                     variants={tabButtonVariants}
                     animate={activeTab === 'security' ? 'active' : 'inactive'}
@@ -43,7 +44,7 @@ const SwitchNet: React.FC = () => {
                     Security
                 </motion.button>
                 <motion.button
-                    className="flex-1 py-2 text-white font-semibold focus:outline-none bg-gray-700"
+                    className="relative flex-1 border-r border-rule py-3 t-label focus:outline-none"
                     onClick={() => handleTabChange('auditing')}
                     variants={tabButtonVariants}
                     animate={activeTab === 'auditing' ? 'active' : 'inactive'}
@@ -51,7 +52,7 @@ const SwitchNet: React.FC = () => {
                     Auditing
                 </motion.button>
                 <motion.button
-                    className="flex-1 py-2 text-white font-semibold rounded-r-xl focus:outline-none bg-gray-700"
+                    className="relative flex-1 py-3 t-label focus:outline-none"
                     onClick={() => handleTabChange('monitoring')}
                     variants={tabButtonVariants}
                     animate={activeTab === 'monitoring' ? 'active' : 'inactive'}
@@ -61,13 +62,13 @@ const SwitchNet: React.FC = () => {
             </div>
 
             {/* Main Content Below the Tabs */}
-            <div className="flex flex-col md:flex-row" style={{ fontFamily: "'Amaranth'" }}>
+            <div className="flex flex-col md:flex-row">
                 {/* Right Side Content */}
                 <div className="flex-grow flex flex-col" style={{ minHeight: '500px', width: '100%' }}>
-                    <div className="p-4 rounded-lg flex-grow" style={{ minHeight: '500px' }}>
+                    <div className="flex-grow py-6" style={{ minHeight: '500px' }}>
                         {activeTab === 'security' && (
                             <div>
-                                <p className="text-lg text-center text-gray-300 mt-7">
+                                <p className="t-body mx-auto text-center">
                                     Ensure that your smart contracts are secure and free from vulnerabilities before deployment.
                                 </p>
                                 <div className="mt-6">
@@ -77,13 +78,13 @@ const SwitchNet: React.FC = () => {
                         )}
                         {activeTab === 'auditing' && (
                             <div>
-                                <p className="text-lg text-center text-gray-300 mt-4">
+                                <p className="t-body mx-auto text-center">
                                     Audit the codebase and transaction history to ensure compliance and integrity of the smart contract.
                                 </p>
-                                <div className="h-[500px] bg-black mt-4 flex justify-center items-center">
+                                <div className="mt-6 flex h-[500px] items-center justify-center border border-rule bg-void">
                                     <img
                                         src={offchain}
-                                        alt="Auditing illustration"
+                                        alt=""
                                         className="h-full object-contain"
                                     />
                                 </div>
@@ -91,7 +92,7 @@ const SwitchNet: React.FC = () => {
                         )}
                         {activeTab === 'monitoring' && (
                             <div>
-                                <p className="text-lg text-center text-gray-300 mt-4">
+                                <p className="t-body mx-auto text-center">
                                     Monitor on-chain activity to detect potential issues or anomalies in real time.
                                 </p>
                                 <div className="mt-6 h-[500px] w-full ">
@@ -104,9 +105,7 @@ const SwitchNet: React.FC = () => {
                         <div className="mt-6 flex justify-center">
                             <motion.button
                                 onClick={handleNavigate}
-                                className="px-6 py-2 gradient-button p-1  text-white font-semibold rounded-xl hover:bg-[#6c42e2]"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                className="btn btn-accent"
                             >
                                 {buttonText}
                             </motion.button>

@@ -1,17 +1,17 @@
 import { useNavigate } from "react-router-dom";
 
-const BackButton = ({mode}:{mode:string}) => {
+/* `mode` is accepted for call-site compatibility but ignored — the substrate
+   is always dark now, so there is no light variant to switch to. */
+type BackButtonProps = { mode?: string };
+
+const BackButton = (props: BackButtonProps) => {
+    void props;
     const navigate = useNavigate();
-    const handleBack = () => {
-        navigate('/');
-    };
 
     return (
-        <div className="fixed top-0 left-0 p-2 m-4   rounded-md">
-            <button onClick={handleBack} className={`text-${mode==='light'?'black':'white'} hover:underline`}>
-                back
-            </button>
-        </div>
+        <button onClick={() => navigate('/')} className="btn btn-sm btn-ghost">
+            Back
+        </button>
     );
 };
 

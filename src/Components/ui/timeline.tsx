@@ -1,13 +1,11 @@
 "use client";
-import {
-  useScroll,
-  useTransform,
-  motion,
-} from "framer-motion";
+import { useScroll, useTransform, motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 
 interface TimelineEntry {
   title: string;
+  /** Optional right-aligned metadata, e.g. a date or location. */
+  meta?: string;
   content: React.ReactNode;
 }
 
@@ -17,11 +15,16 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect();
-      setHeight(rect.height);
-    }
-  }, [ref]);
+    if (!ref.current) return;
+    // Track height so the progress rail matches the log's real extent
+    // even after images load and reflow it.
+    const el = ref.current;
+    const measure = () => setHeight(el.getBoundingClientRect().height);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -32,54 +35,55 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
-    <div
-      className="w-full app-background dark:bg-neutral-950 text-white font-sans md:px-10"
-      ref={containerRef}
-
-    >
-      <div className="  flex justify-center mt-20 md:px-8 lg:px-10 text-center">
-        <h2 className="text-lg md:text-4xl mb-4 text-white dark:text-white max-w-4xl" >
-          Evolution to <span className='text-[#6C3AE1]'>SENTIO</span> : Bringing Security 
+    <div className="w-full bg-void text-phosphor" ref={containerRef}>
+      <header className="shell border-b border-rule py-16 lg:py-24">
+        <span className="t-meta text-hazard">Mission Log</span>
+        <h2 className="t-display-lg mt-3">
+          Evolution to
+          <br />
+          Sentio
         </h2>
+        <div className="rule-accent my-6 max-w-md" />
+        <p className="t-body">
+          From a 72-hour hacker house build to a funded security platform on AO. The
+          record, in order.
+        </p>
+      </header>
 
-      </div>
-
-      <div ref={ref} className="relative max-w-7xl mx-auto pb-20">
-        {data.map((item, index) => (
+      <div className="shell">
+        <div ref={ref} className="relative pb-20 pl-10 sm:pl-16">
+          {/* Rail: static hairline, overlaid by a hazard fill driven by scroll. */}
           <div
-            key={index}
-            className="flex justify-start pt-10 md:pt-40 md:gap-10"
+            style={{ height: height + "px" }}
+            className="absolute left-0 top-0 w-px overflow-hidden bg-rule sm:left-2"
           >
-            <div className="sticky flex flex-col md:flex-row z-5 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
-              <div className="h-10 absolute left-3 md:left-3 w-10 rounded-full bg-white dark:bg-black flex items-center justify-center">
-                <div className="h-4 w-4 rounded-full bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 p-2" />
-              </div>
-              <h3 className="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-500 dark:text-neutral-500 ">
-                {item.title}
-              </h3>
-            </div>
-
-            <div className="relative pl-20 pr-4 md:pl-4 w-full">
-              <h3 className="md:hidden block text-2xl mb-4 text-left font-bold text-white dark:text-neutral-500">
-                {item.title}
-              </h3>
-              <p className="text-white"> {item.content}{" "}</p>
-            </div>
+            <motion.div
+              style={{ height: heightTransform, opacity: opacityTransform }}
+              className="absolute inset-x-0 top-0 w-px bg-hazard"
+            />
           </div>
-        ))}
-        <div
-          style={{
-            height: height + "px",
-          }}
-          className="absolute md:left-8 left-8 top-0 overflow-hidden w-[2px] bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-neutral-200 dark:via-neutral-700 to-transparent to-[99%]  [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] "
-        >
-          <motion.div
-            style={{
-              height: heightTransform,
-              opacity: opacityTransform,
-            }}
-            className="absolute inset-x-0 top-0  w-[2px] bg-gradient-to-t from-purple-500 via-blue-500 to-transparent from-[0%] via-[10%] rounded-full"
-          />
+
+          {data.map((item, index) => (
+            <article key={index} className="relative pt-12 md:pt-24">
+              {/* Registration mark on the rail */}
+              <span
+                className="absolute -left-10 top-12 h-2 w-2 border border-rule2 bg-void sm:-left-[1.85rem] md:top-24"
+                aria-hidden
+              />
+
+              <div className="flex flex-col gap-1 border-b border-rule pb-4 sm:flex-row sm:items-baseline sm:justify-between">
+                <div className="flex items-baseline gap-3">
+                  <span className="t-meta text-hazard">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="t-display-md">{item.title}</h3>
+                </div>
+                {item.meta && <span className="t-meta text-faint">{item.meta}</span>}
+              </div>
+
+              <div className="mt-6">{item.content}</div>
+            </article>
+          ))}
         </div>
       </div>
     </div>

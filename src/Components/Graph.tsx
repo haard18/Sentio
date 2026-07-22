@@ -15,7 +15,7 @@ const Circle = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "z-10 flex size-20 items-center justify-center rounded-xl border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]",
+        "z-10 flex size-20 items-center justify-center border border-rule2 bg-steel p-3",
         className,
       )}
     >
@@ -34,7 +34,7 @@ export function AnimatedBeamDemo() {
 
   return (
     <div
-      className="relative flex w-full max-w-[500px] items-center justify-center overflow-hidden rounded-lg h-50  bg-background p-10 md:shadow-xl "
+      className="relative flex w-full max-w-[500px] items-center justify-center overflow-hidden border border-rule bg-void p-10"
       ref={containerRef}
     >
       <div className="flex size-full flex-col items-stretch justify-between gap-10">
@@ -59,8 +59,8 @@ export function AnimatedBeamDemo() {
         startYOffset={10}
         endYOffset={10}
         curvature={-20}
-        gradientStartColor="#ffffff"
-        gradientStopColor="#9966ff"
+        gradientStartColor="#EAEAEA"
+        gradientStopColor="#E61919"
         duration={3}
         delay={1}
       />
@@ -93,17 +93,17 @@ const Icons = {
   openai: () => (
     <img
       src={logo}
-      alt="OpenAI Logo"
+      alt=""
       width="90"
       height="90"
-      className="rounded-full"
+      className=""
     />
   ),
   user: () => (
     
-    <GiProcessor size={28} color="#000000"/>
+    <GiProcessor size={28} color="#EAEAEA"/>
   ),
   target: () => (
-    <FaUser size={24} color="#000000"/>
+    <FaUser size={24} color="#EAEAEA"/>
   ),
 };

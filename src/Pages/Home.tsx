@@ -1,290 +1,314 @@
 "use client"
 
-import { Button } from "./../Components/ui/button"
-import { Activity, Database, ArrowRight, Shield, ChevronRight, Bell, Lock } from "lucide-react"
 import { useRef } from "react"
+import { motion } from "framer-motion"
 import Navbar from "../Components/Navbar"
 import Footer from "../Components/Footer"
 import FAQSection from "../Components/FAQ"
-import { motion } from "framer-motion"
 
-export default function Component() {
-  const howItWorksRef = useRef<HTMLDivElement | null>(null)
+const READOUTS = [
+  { id: "01", name: "Process Authentication", value: 98, state: "Nominal" },
+  { id: "02", name: "System Monitoring", value: 76, state: "Degraded" },
+  { id: "03", name: "Access Control", value: 92, state: "Nominal" },
+]
 
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  }
+const SOLUTIONS = [
+  {
+    id: "01",
+    title: "On-Chain\nMonitoring",
+    body: "Sentinels attach to live AO processes and stream message-level telemetry. Anomalous handler calls, balance drift, and permission escalation raise an alert the moment they are observed.",
+    specs: [
+      ["Latency", "Real-time"],
+      ["Surface", "AO processes"],
+      ["Output", "Alert, webhook"],
+    ],
+    href: "/dashboard",
+    cta: "Open dashboard",
+  },
+  {
+    id: "02",
+    title: "Off-Chain\nAudit",
+    body: "Static analysis of Lua source before it ever reaches the network. Vulnerability classes, standards violations, and unsafe patterns are reported, then written to Arweave as an atomic asset.",
+    specs: [
+      ["Stage", "Pre-deploy"],
+      ["Surface", "Lua source"],
+      ["Output", "Immutable report"],
+    ],
+    href: "/offchain",
+    cta: "Run an audit",
+  },
+]
 
-  const staggerChildren = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
-  }
+const CAPABILITIES = [
+  ["01", "Static Analysis", "Vulnerability classes, unsafe patterns, standards enforcement"],
+  ["02", "Sentinel Agents", "Autonomous guardians pinned to a process ID"],
+  ["03", "Immutable Reports", "Audit output stored on Arweave as an atomic asset"],
+  ["04", "Alert Pipeline", "Webhook and GitHub delivery on threat detection"],
+  ["05", "Certificates", "Verifiable proof of audit, issued per process"],
+  ["06", "Token Faucet", "Test-net funding for evaluation environments"],
+]
+
+const rise = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
+}
+
+const stagger = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+}
+
+export default function Home() {
+  const solutionsRef = useRef<HTMLDivElement | null>(null)
 
   return (
-    <div className="min-h-screen app-background text-white relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#1a0b2e] to-[#080413]">
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: "radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.2) 2px, transparent 0)",
-            backgroundSize: "50px 50px",
-          }}
-        />
-      </div>
-
-      {/* Purple glow effects */}
-      <div className="absolute top-40 -left-40 w-96 h-96 bg-purple-600 rounded-full filter blur-[150px] opacity-20" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-600 rounded-full filter blur-[150px] opacity-20" />
-
+    <div className="min-h-screen bg-void text-phosphor">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative pt-20 pb-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* New Feature Banner */}
-          <motion.div className="flex justify-center mb-10" initial="hidden" animate="visible" variants={fadeIn}>
-            <div className="inline-flex items-center space-x-2 bg-purple-900/30 border border-purple-500/30 rounded-full px-5 mt-10 py-2">
-              <div className="w-2.5 h-2.5 bg-purple-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-purple-200">
-                New vulnerabilities features are now live!
-              </span>
-            </div>
-          </motion.div>
+      {/* ── HERO ────────────────────────────────────────────── */}
+      <section className="relative mt-14 border-b border-rule">
+        <div className="blueprint pointer-events-none absolute inset-0 opacity-40" aria-hidden />
 
-          {/* Hero Content */}
-          <motion.div
-            className="text-center z-10 max-w-4xl mx-auto"
-            initial="hidden"
-            animate="visible"
-            variants={staggerChildren}
-          >
-            <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-purple-400"
-              variants={fadeIn}
-            >
-              End-to-End Security Pipeline for Blockchain Applications
+        <div className="shell relative grid gap-10 py-16 lg:grid-cols-[1fr_320px] lg:gap-0 lg:py-24">
+          <motion.div initial="hidden" animate="visible" variants={stagger} className="lg:pr-12">
+            <motion.div variants={rise} className="mb-8">
+              <span className="tag tag-accent">
+                <span className="led" aria-hidden /> New — Vulnerability feed live
+              </span>
+            </motion.div>
+
+            <motion.h1 variants={rise} className="t-display-xl">
+              End-to-end
+              <br />
+              security for
+              <br />
+              <span className="text-hazard">on-chain</span> code
             </motion.h1>
 
-            <motion.p className="text-xl text-purple-100/80 mb-12 max-w-2xl mx-auto leading-relaxed" variants={fadeIn}>
-              Sentio helps you monitor, audit, and secure your AO processes with intelligent analysis, real-time alerts,
-              and comprehensive reporting so you always stay protected.
+            <motion.div variants={rise} className="rule-accent my-8 max-w-md" />
+
+            <motion.p variants={rise} className="t-body">
+              Sentio audits your Lua before deployment and posts Sentinels to watch it after.
+              Analysis, real-time alerting, and immutable reporting — one pipeline, no
+              intermediaries.
             </motion.p>
 
-            {/* Redesigned button layout */}
-            <motion.div variants={fadeIn} className="flex flex-col items-center space-y-6">
-              {/* Primary action buttons in a row */}
-              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
-                <Button className="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white rounded-xl px-8 py-6 text-lg font-medium shadow-lg shadow-purple-900/30 border border-purple-500/20 transition-all duration-300 flex-1">
-                  <a href="/dashboard" className="w-full h-full flex items-center justify-center">
-                    Start Monitoring
-                  </a>
-                </Button>
-
-                <Button className="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white rounded-xl px-8 py-6 text-lg font-medium shadow-lg shadow-purple-900/30 border border-purple-500/20 transition-all duration-300 flex-1">
-                  <a href="/offchain" className="w-full h-full flex items-center justify-center">
-                    Start Auditing
-                  </a>
-                </Button>
-              </div>
-
-              {/* Secondary action button below */}
-              <Button className="bg-transparent hover:bg-white/5 text-white border border-purple-500/30 rounded-xl px-8 py-4 text-base font-medium transition-all duration-300 group">
-                <a href="https://sentio-docs.vercel.app/" className="w-full h-full flex items-center justify-center">
-                  Learn More
-                  <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </Button>
+            <motion.div variants={rise} className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <a href="/dashboard" className="btn btn-accent">
+                Start monitoring
+              </a>
+              <a href="/offchain" className="btn">
+                Start auditing
+              </a>
+              <a
+                href="https://sentio-docs.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ghost"
+              >
+                Docs
+              </a>
             </motion.div>
           </motion.div>
 
-          {/* Dashboard Preview */}
-          <motion.div
-            className="mt-20 relative"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+          {/* Spec column — mechanical metadata slab */}
+          <motion.aside
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="relative self-end border-l border-rule lg:pl-8"
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-[#080413] via-transparent to-transparent z-10" />
-            <div className="relative z-0 rounded-2xl border border-purple-500/20 shadow-2xl overflow-hidden bg-black/40 backdrop-blur-sm">
-              <div className="p-6 sm:p-8">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center space-x-3">
-                    <Shield className="h-6 w-6 text-purple-400" />
-                    <h2 className="text-2xl font-semibold text-white">Security Dashboard</h2>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-purple-500 text-purple-400 hover:bg-purple-500/10"
-                  >
-                    <Bell className="h-4 w-4 mr-2" />
-                    Create alert
-                  </Button>
+            <dl className="space-y-4">
+              {[
+                ["Platform", "AO / Arweave"],
+                ["Access", "Permissionless"],
+                ["Report", "Atomic Asset"],
+              ].map(([k, v]) => (
+                <div key={k} className="flex items-baseline justify-between border-b border-rule pb-2">
+                  <dt className="t-meta">{k}</dt>
+                  <dd className="t-label text-phosphor">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </motion.aside>
+        </div>
+      </section>
+
+      {/* ── LIVE READOUT PANEL ──────────────────────────────── */}
+      <section className="shell py-16 lg:py-24">
+        <div className="panel">
+          <div className="panel-head">
+            <div className="flex items-center gap-3">
+              <span className="led" aria-hidden />
+              <span className="t-label">Security dashboard</span>
+            </div>
+            <a href="/dashboard" className="t-meta hover:text-hazard2 transition-colors">
+              Create alert
+            </a>
+          </div>
+
+          <motion.div
+            className="grid-hair"
+            style={{ gridTemplateColumns: "1fr" }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={stagger}
+          >
+            {READOUTS.map((r) => (
+              <motion.div
+                key={r.id}
+                variants={rise}
+                className="row-scan grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 p-4 sm:grid-cols-[auto_1fr_auto_auto] sm:p-5"
+              >
+                <span className="t-meta text-faint">{r.id}</span>
+                <span className="t-label text-phosphor">{r.name}</span>
+
+                {/* Stepped bar — 20 discrete cells, no smooth fill. */}
+                <div className="col-span-2 flex gap-[2px] sm:col-span-1">
+                  {Array.from({ length: 20 }).map((_, i) => {
+                    const lit = i < Math.round((r.value / 100) * 20)
+                    return (
+                      <motion.span
+                        key={i}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.025, duration: 0.1 }}
+                        className={`h-4 w-[6px] ${
+                          lit ? (r.value < 80 ? "bg-hazard" : "bg-phosphor") : "bg-rule"
+                        }`}
+                      />
+                    )
+                  })}
                 </div>
 
-                <motion.div className="space-y-5" variants={staggerChildren} initial="hidden" animate="visible">
-                  {[
-                    { name: "Process Authentication", status: 98, icon: Lock },
-                    { name: "System Monitoring", status: 76, icon: Activity },
-                    { name: "Access Control", status: 92, icon: Shield },
-                  ].map((item) => (
-                    <motion.div
-                      key={item.name}
-                      className="flex items-center justify-between p-5 bg-white/5 hover:bg-white/10 rounded-xl border border-purple-500/10 hover:border-purple-500/30 transition-all duration-300"
-                      variants={fadeIn}
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 rounded-lg bg-purple-900/50 flex items-center justify-center">
-                          <item.icon className="h-5 w-5 text-purple-400" />
-                        </div>
-                        <span className="font-medium text-white">{item.name}</span>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <div className="h-3 w-32 bg-purple-900/30 rounded-full overflow-hidden">
-                          <motion.div
-                            className="h-full bg-gradient-to-r from-purple-500 to-purple-400"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${item.status}%` }}
-                            transition={{ duration: 1.5, delay: 0.5 }}
-                          />
-                        </div>
-                        <span className="text-sm font-semibold text-purple-300 min-w-[40px] text-right">
-                          {item.status}%
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </div>
+                <div className="flex items-baseline gap-3 justify-self-end">
+                  <span className="t-meta">{r.state}</span>
+                  <span className="t-display text-xl tabular-nums">{r.value}%</span>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Solutions Section */}
-      <motion.section
-        className="py-24 relative"
-        ref={howItWorksRef}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="text-center mb-16"
-            variants={staggerChildren}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.div
-              className="inline-block px-4 py-1 rounded-full bg-purple-900/30 text-purple-400 font-medium text-sm mb-6"
-              variants={fadeIn}
-            >
-              SOLUTIONS
-            </motion.div>
-            <motion.h2
-              className="text-4xl sm:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200"
-              variants={fadeIn}
-            >
-              Comprehensive Blockchain Monitoring
-            </motion.h2>
-            <motion.p className="text-xl text-purple-100/70 max-w-2xl mx-auto" variants={fadeIn}>
-              Explore our advanced monitoring solutions for both on-chain and off-chain analysis to ensure complete
-              coverage of your blockchain operations.
-            </motion.p>
-          </motion.div>
+      {/* ── SOLUTIONS ───────────────────────────────────────── */}
+      <section ref={solutionsRef} className="border-y border-rule">
+        <div className="shell py-16 lg:py-24">
+          <header className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="t-meta text-hazard">Solutions</span>
+              <h2 className="t-display-lg mt-3">
+                Two surfaces.
+                <br />
+                One pipeline.
+              </h2>
+            </div>
+            <p className="t-body sm:max-w-xs sm:text-right">
+              Coverage before deployment and after it. Nothing between the two is left
+              unobserved.
+            </p>
+          </header>
 
           <motion.div
-            className="grid md:grid-cols-2 gap-8"
-            variants={staggerChildren}
+            className="grid-hair md:grid-cols-2"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-80px" }}
+            variants={stagger}
           >
-            {/* On-chain Monitoring Card */}
-            <motion.div
-              className="group relative rounded-2xl border border-purple-500/20 bg-gradient-to-b from-purple-900/10 to-black/40 backdrop-blur-sm overflow-hidden hover:border-purple-500/40 hover:shadow-xl hover:shadow-purple-900/10 transition-all duration-500"
-              variants={fadeIn}
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative p-8 flex flex-col h-full">
-                <div className="mb-8">
-                  <div className="w-16 h-16 rounded-2xl bg-purple-900/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Activity className="h-8 w-8 text-purple-400" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-purple-200 transition-colors duration-300">
-                    On-chain Monitoring
-                  </h3>
-                  <p className="text-purple-100/70 leading-relaxed">
-                    Real-time monitoring and analysis of blockchain transactions, smart contracts, and network
-                    activities with advanced threat detection.
-                  </p>
-                </div>
-                <a
-                  href="/dashboard"
-                  className="mt-auto inline-flex items-center text-purple-400 hover:text-purple-300 text-lg font-medium group-hover:translate-x-1 transition-all duration-300"
-                >
-                  Learn more
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:ml-3 transition-all" />
-                </a>
-              </div>
-            </motion.div>
+            {SOLUTIONS.map((s) => (
+              <motion.article
+                key={s.id}
+                variants={rise}
+                className="group relative flex flex-col p-6 transition-colors hover:bg-steel sm:p-10"
+              >
+                <span className="t-display pointer-events-none absolute right-4 top-4 text-6xl leading-none text-rule transition-colors group-hover:text-hazard sm:text-8xl">
+                  {s.id}
+                </span>
 
-            {/* Off-chain Monitoring Card */}
-            <motion.div
-              className="group relative rounded-2xl border border-purple-500/20 bg-gradient-to-b from-purple-900/10 to-black/40 backdrop-blur-sm overflow-hidden hover:border-purple-500/40 hover:shadow-xl hover:shadow-purple-900/10 transition-all duration-500"
-              variants={fadeIn}
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative p-8 flex flex-col h-full">
-                <div className="mb-8">
-                  <div className="w-16 h-16 rounded-2xl bg-purple-900/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Database className="h-8 w-8 text-purple-400" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-purple-200 transition-colors duration-300">
-                    Off-chain Monitoring
-                  </h3>
-                  <p className="text-purple-100/70 leading-relaxed">
-                    Monitor and audit data interactions, file operations, and network requests for comprehensive
-                    security and vulnerability detection.
-                  </p>
-                </div>
+                <h3 className="t-display-md relative whitespace-pre-line">{s.title}</h3>
+
+                <p className="t-body mt-6 flex-1">{s.body}</p>
+
+                <dl className="mt-8 border-t border-rule pt-4">
+                  {s.specs.map(([k, v]) => (
+                    <div key={k} className="flex justify-between border-b border-rule py-2">
+                      <dt className="t-meta">{k}</dt>
+                      <dd className="t-meta text-phosphor">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+
                 <a
-                  href="/offchain"
-                  className="mt-auto inline-flex items-center text-purple-400 hover:text-purple-300 text-lg font-medium group-hover:translate-x-1 transition-all duration-300"
+                  href={s.href}
+                  className="t-label mt-8 inline-flex items-center gap-2 self-start border-b border-rule2 pb-1 text-phosphor transition-colors hover:border-hazard hover:text-hazard2"
                 >
-                  Learn more
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:ml-3 transition-all" />
+                  {s.cta}
+                  <span className="transition-transform group-hover:translate-x-1" aria-hidden>
+                    {"→"}
+                  </span>
                 </a>
-              </div>
-            </motion.div>
+              </motion.article>
+            ))}
           </motion.div>
         </div>
-      </motion.section>
+      </section>
 
-      <motion.section
-        className="py-24 relative"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <FAQSection />
-      </motion.section>
+      {/* ── CAPABILITY INDEX ────────────────────────────────── */}
+      <section className="shell py-16 lg:py-24">
+        <header className="mb-10">
+          <span className="t-meta text-hazard">Capability Index</span>
+          <h2 className="t-display-lg mt-3">What it does</h2>
+        </header>
 
-      <motion.div
-        className="relative"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <Footer />
-      </motion.div>
+        <motion.dl
+          className="border-t border-rule"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={stagger}
+        >
+          {CAPABILITIES.map(([id, title, desc]) => (
+            <motion.div
+              key={id}
+              variants={rise}
+              className="row-scan grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 border-b border-rule px-3 py-5 md:grid-cols-[80px_260px_1fr] md:items-baseline"
+            >
+              <dt className="t-meta text-hazard">{id}</dt>
+              <dd className="t-label text-phosphor">{title}</dd>
+              <dd className="col-span-2 t-meta normal-case tracking-normal md:col-span-1">
+                {desc}
+              </dd>
+            </motion.div>
+          ))}
+        </motion.dl>
+      </section>
+
+      {/* ── FAQ ─────────────────────────────────────────────── */}
+      <FAQSection />
+
+      {/* ── CTA BAND ────────────────────────────────────────── */}
+      <section className="border-t border-rule">
+        <div className="shell flex flex-col items-start gap-8 py-16 lg:flex-row lg:items-center lg:justify-between lg:py-20">
+          <h2 className="t-display-lg">
+            Ship it
+            <br />
+            audited<span className="text-hazard">.</span>
+          </h2>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a href="/offchain" className="btn btn-accent">
+              Run an audit
+            </a>
+            <a href="/dashboard" className="btn">
+              Deploy a sentinel
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   )
 }

@@ -1,50 +1,44 @@
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
-import BackButton from '../Components/BackButton';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';  // Import Toastify components
-import 'react-toastify/dist/ReactToastify.css';          // Import Toastify CSS
-import "../styles/Waitlist.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import BackButton from '../Components/BackButton';
 import Footer from '../Components/Footer';
-import RetroGrid from '../../src/Components/ui/retro-grid';
-// import Navbar from '../Components/Navbar';
-// import {BACKEND_URL} from "../../env"
+
+const UPDATES = [
+  { date: "05/09/2024", message: "Opened waitlist for masses" },
+  { date: "28/08/2024", message: "LaunchPad kicks off" },
+  { date: "26/07/2024", message: "Integration with BetterIDEa" },
+  { date: "08/07/2024", message: "HackerHouse presentation" },
+  { date: "06/07/2024", message: "Idea forging" },
+];
+
+const TOAST = {
+  position: "top-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+} as const;
+
 const Waitlist = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [hasUpdates, setHasUpdates] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
-      const response = await axios.post("https://sam-server.azurewebsites.net/api/waitlist", { email, name });
-      console.log(response.data);
-      // Show success toast notification
-      toast.success('You have successfully joined the waitlist!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
+      await axios.post("https://sam-server.azurewebsites.net/api/waitlist", { email, name });
+      toast.success('Enrolled — you are on the waitlist.', TOAST);
       setShowConfirmation(true);
     } catch {
-      // Show error toast notification
-      toast.error('An error occurred. Please try again.', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error('Transmission failed. Try again.', TOAST);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -54,121 +48,124 @@ const Waitlist = () => {
     setName("");
   };
 
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-    setHasUpdates(false);
-  };
-
-  const updates = [
-    { date: "05/09/2024", message: "Opened Waitlist for Masses" },
-    { date: "28/08/2024", message: "LaunchPad Kicks Off" },
-    { date: "26/07/2024", message: "Integration with BetterIDEa" },
-    { date: "08/07/2024", message: "HackerHouse Presentation" },
-    { date: "06/07/2024", message: "Idea Forging" },
-    // { date: "23/01/2023", message: "We finalized the design system for the upcoming launch." },
-  ];
-
   return (
-    <>
-      {/* <Navbar/> */}
-      <div className="bg-[#0E0E0E] app-background h-screen w-full  flex flex-col justify-center items-center relative">
-        <BackButton mode='dark' />
-        <RetroGrid/>
-        {/* Toast Container */}
-        <ToastContainer />
-        <button onClick={toggleNotifications} className="absolute top-4 right-4 text-white p-2 rounded-full ">
-          <FontAwesomeIcon icon={faBell} className="text-2xl" />
-          {hasUpdates && (
-            <span className="absolute top-0 right-0 inline-flex items-center justify-center w-3 h-3 text-xs font-bold leading-none text-white bg-red-600 rounded-full"></span>
-          )}
-        </button>
+    <div className="flex min-h-screen flex-col bg-void text-phosphor">
+      <ToastContainer theme="dark" />
 
-        {showNotifications && (
-          <div className="notifications backdrop-blur-sm	 text-white p-4 rounded-lg shadow-lg fixed top-16 right-4 w-80 h-auto z-50">
-            <h2 className="text-lg font-semibold mb-2">Updates</h2>
-            <div className="updates-list">
-              {updates.map((update, index) => (
-                <div key={index} className="update-item mb-4">
-                  <p className="text-gray-400 text-sm">{update.date}</p>
-                  <p className="text-white">{update.message}</p>
-                </div>
-              ))}
-            </div>
-            <button onClick={toggleNotifications} className="text-md text-right text-white mt-4">
-              Close
-            </button>
-          </div>
-        )}
+      <div className="fixed left-4 top-4 z-40">
+        <BackButton mode="dark" />
+      </div>
 
+      <main className="relative flex-1 border-b border-rule">
+        <div className="blueprint pointer-events-none absolute inset-0 opacity-40" aria-hidden />
 
-        {!showConfirmation ? (
-          <div className="text-center mb-9">
-            <h1 className="gradient-text text-5xl md:text-9xl font-light text-center tracking-widest mb-4">
-              <span>SENTIO</span>
+        <div className="shell relative grid gap-12 py-24 lg:grid-cols-[1fr_320px] lg:gap-16 lg:py-32">
+          {/* Enrolment form */}
+          <div>
+            <span className="t-meta text-hazard">Access Request</span>
+            <h1 className="t-display-xl mt-4">
+              Join the
+              <br />
+              waitlist
             </h1>
-            <h1 className="text-white text-4xl md:text-8xl font-light tracking-widest mb-4" style={{ fontFamily: "'Anton SC',sans-serif" }}>
-              JOIN OUR WAITLIST
-            </h1>
-            <p className="text-white text-xl md:text-3xl font-extralight mb-8" style={{ fontFamily: "'Roboto'" }}>
-              Be the first to know when we launch!
+            <div className="rule-accent my-8 max-w-md" />
+            <p className="t-body">
+              Sentio is onboarding in cohorts. Submit your identifier and you will be
+              notified the moment a slot opens.
             </p>
-            <form onSubmit={handleSubmit} className="flex flex-col items-center">
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your name"
-                className="px-4 py-2 rounded-lg text-black text-lg mb-4 w-72 md:w-96"
-                required
-              />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="px-4 py-2 rounded-lg text-black text-lg mb-4 w-72 md:w-96"
-                required
-              />
-              <button type="submit" className="px-6 py-3 bg-white rounded-xl font-bold w-40">
-                Join Waitlist
+
+            <form onSubmit={handleSubmit} className="mt-10 max-w-md space-y-4">
+              <label className="block">
+                <span className="t-meta">01 / Name</span>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Operator name"
+                  className="field mt-2"
+                  required
+                />
+              </label>
+
+              <label className="block">
+                <span className="t-meta">02 / Email</span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@domain.com"
+                  className="field mt-2"
+                  required
+                />
+              </label>
+
+              <button type="submit" className="btn btn-accent w-full" disabled={submitting}>
+                {submitting ? "Transmitting…" : "Submit request"}
               </button>
             </form>
           </div>
-        ) : (
-          <div className="bg-black bg-opacity-80 flex justify-center items-center fixed inset-0 z-50">
-            <div className="bg-[#1a1a1a] p-8 rounded-lg text-center relative shadow-lg w-80 md:w-96">
-              <button className="absolute top-2 right-2 text-white text-xl" onClick={handleClose}>
-                &times;
+
+          {/* Changelog — replaces the old bell/notification popover */}
+          <aside className="relative self-start border-l border-rule lg:pl-8">
+            <div className="flex items-center gap-2 border-b border-rule pb-2">
+              <span className="led" aria-hidden />
+              <h2 className="t-label">Log</h2>
+              <span className="t-meta ml-auto text-faint">
+                {String(UPDATES.length).padStart(2, "0")} entries
+              </span>
+            </div>
+            <ol className="mt-4">
+              {UPDATES.map((u) => (
+                <li key={u.date} className="border-b border-rule py-3">
+                  <span className="t-meta text-faint">{u.date}</span>
+                  <p className="t-label mt-1 text-phosphor">{u.message}</p>
+                </li>
+              ))}
+            </ol>
+          </aside>
+        </div>
+      </main>
+
+      {showConfirmation && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-void/90 p-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="panel w-full max-w-md">
+            <div className="panel-head">
+              <span className="t-label">Confirmation</span>
+              <button onClick={handleClose} className="t-label text-dim hover:text-hazard2" aria-label="Close">
+                ×
               </button>
-              <div className="flex justify-center items-center mb-6">
-                <div className="checkmark">
-                  <div className="checkmark_stem"></div>
-                  <div className="checkmark_kick"></div>
+            </div>
+            <div className="p-6">
+              <div className="flex items-center gap-3">
+                <span className="led" aria-hidden />
+                <span className="t-meta text-signal">Enrolled</span>
+              </div>
+              <h2 className="t-display-md mt-4">You're on the list</h2>
+              <p className="t-body mt-3">
+                We will transmit as soon as your cohort opens.
+              </p>
+              <dl className="mt-6 border-t border-rule">
+                <div className="flex justify-between gap-3 border-b border-rule py-2">
+                  <dt className="t-meta">Name</dt>
+                  <dd className="t-label truncate text-phosphor">{name}</dd>
                 </div>
-              </div>
-              <h2 className="text-white text-2xl font-semibold mb-2">
-                We've added you to our waiting list!
-              </h2>
-              <p className="text-gray-400 mb-6">We'll let you know when we're ready to launch.</p>
-              <div className="bg-[#262626] p-4 rounded-md text-left">
-                <p className="text-white text-sm mb-2">
-                  <span className="font-semibold">Name:</span> {name}
-                </p>
-                <p className="text-white text-sm">
-                  <span className="font-semibold">Email:</span> {email}
-                </p>
-              </div>
+                <div className="flex justify-between gap-3 border-b border-rule py-2">
+                  <dt className="t-meta">Email</dt>
+                  <dd className="t-label truncate text-phosphor">{email}</dd>
+                </div>
+              </dl>
+              <button onClick={handleClose} className="btn mt-6 w-full">Close</button>
             </div>
           </div>
-        )}
-        {/* <div className=''> */}
-        <div className='flex justify-center w-[88%] bottom-0 fixed '>
-
-          <Footer />
         </div>
-        {/* </div> */}
-      </div>
-    </>
+      )}
+
+      <Footer />
+    </div>
   );
 };
 

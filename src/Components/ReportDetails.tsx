@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 interface ReportDetailsProps {
   reportItems: {
@@ -10,43 +9,67 @@ interface ReportDetailsProps {
     severity: string;
   }[];
   severityLabel: string;
+  /** Tailwind class for the severity swatch, e.g. `bg-hazard`. */
   severityColor: string;
 }
 
-const ReportDetails: React.FC<ReportDetailsProps> = ({ reportItems, severityLabel, severityColor }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDetails = () => {
-    setIsOpen(!isOpen);
-  };
+const ReportDetails: React.FC<ReportDetailsProps> = ({
+  reportItems,
+  severityLabel,
+  severityColor,
+}) => {
+  const [isOpen, setIsOpen] = useState(reportItems.length > 0);
 
   return (
-    <div className="bg-[#2e2e2e] mb-4 p-3 rounded-lg">
-      <div
-        className="flex justify-between items-center cursor-pointer"
-        onClick={toggleDetails}
+    <section className="panel">
+      <button
+        type="button"
+        className="panel-head w-full text-left"
+        onClick={() => setIsOpen((v) => !v)}
+        aria-expanded={isOpen}
       >
-        <div className="text-lg font-semibold">
-          <span className={`px-3 py-1 rounded-lg text-white ${severityColor}`}>{severityLabel}</span> ({reportItems.length})
-        </div>
-        {isOpen ? <FaChevronUp /> : <FaChevronDown />}
-      </div>
+        <span className="flex items-center gap-2">
+          <span className={`h-2 w-2 ${severityColor}`} aria-hidden />
+          <span className="t-label">{severityLabel}</span>
+        </span>
+        <span className="flex items-center gap-3">
+          <span className="t-display text-lg tabular-nums">
+            {String(reportItems.length).padStart(2, '0')}
+          </span>
+          <span
+            className={`t-label text-dim transition-transform duration-150 ${
+              isOpen ? 'rotate-45' : ''
+            }`}
+            aria-hidden
+          >
+            +
+          </span>
+        </span>
+      </button>
+
       {isOpen && (
-        <div className="mt-3  text-gray-300">
+        <div>
           {reportItems.length > 0 ? (
             reportItems.map((item, index) => (
-              <div key={index} className="mb-3">
-                <p><strong>{item.name}</strong> - Line {item.line}</p>
-                <p><strong>Description:</strong> {item.description}</p>
-                <p><strong>Pattern:</strong> {item.pattern}</p>
-              </div>
+              <article key={index} className="border-b border-rule p-4 last:border-0">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h4 className="t-label text-phosphor">{item.name}</h4>
+                  <span className="t-meta shrink-0 tabular-nums">L{item.line}</span>
+                </div>
+                <p className="mt-2 font-mono text-xs leading-relaxed text-dim">
+                  {item.description}
+                </p>
+                <pre className="mt-3 overflow-x-auto border border-rule bg-void p-2 font-mono text-[11px] text-faint">
+                  {item.pattern}
+                </pre>
+              </article>
             ))
           ) : (
-            <p>No vulnerabilities found.</p>
+            <p className="t-meta p-4">No findings at this severity.</p>
           )}
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

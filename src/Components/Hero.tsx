@@ -18,15 +18,14 @@ export function HeroHighlightDemo() {
           duration: 0.5,
           ease: [0.4, 0.0, 0.2, 1],
         }}
-        className="text-2xl  px-4 md:text-4xl lg:text-5xl font-bold text-white dark:text-white max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto "
-       style={{fontFamily:"'Roboto'"}}>
+        className="t-display-lg mx-auto max-w-4xl px-4 text-center">
         With code audits, nothing&apos;s clear. Everything is complex. Everything
         is a{" "}
-        <Highlight className="text-black dark:text-white">
+        <Highlight className="text-phosphor">
           function, of a function, of a function.
         </Highlight><br/>
         <button
-          className="px-4 py-4 mt-5 gradient-button rounded-lg text-sm hover:bg-white hover:text-[#9966ff] transition-colors duration-300"
+          className="btn btn-accent mt-8"
           onClick={() => {
             window.scrollTo({
               top: document.body.scrollHeight,

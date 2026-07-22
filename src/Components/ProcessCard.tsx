@@ -13,48 +13,58 @@ interface Process {
 
 const ProcessCard: React.FC<{ process: Process; onCopy: () => void }> = ({ process, onCopy }) => {
   if (!process || !process.id) {
-    return <div>Error: Process data is not available</div>;
+    return (
+      <div className="panel p-4">
+        <span className="t-label text-hazard2">Error / Process data unavailable</span>
+      </div>
+    );
   }
 
   const processId = process.id;
-  const tags = process.tags;
+  const tags = process.tags ?? [];
 
   const handleCopyId = () => {
     navigator.clipboard.writeText(processId);
-    onCopy(); // Call the onCopy callback
+    onCopy();
   };
 
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="rounded-lg my-4 w-full  p-4 bg-[#1A1A1A] shadow-lg"
+      transition={{ duration: 0.35 }}
+      className="panel group relative h-full transition-colors hover:border-rule2"
     >
-      <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <h3 className="text-white text-lg font-semibold">Process ID:</h3>
-          <div className="flex items-center">
-            <p className="text-gray-300 text-sm truncate">{processId}</p>
-            <button
-              onClick={handleCopyId}
-              className="text-gray-400 hover:text-white ml-2"
-              aria-label="Copy Process ID"
-            >
-              <FaCopy />
-            </button>
-          </div>
-        </div>
+      <div className="panel-head">
+        <span className="t-meta">Process ID</span>
+        <button
+          onClick={handleCopyId}
+          className="t-meta flex items-center gap-1.5 transition-colors hover:text-hazard2"
+          aria-label="Copy process ID"
+        >
+          <FaCopy className="h-3 w-3" /> Copy
+        </button>
       </div>
 
-      <div className="mt-2 bg-[#2B2B2B] p-4 rounded">
-        {tags.map((tag, index) => (
-          <div key={index} className="text-gray-400 text-sm">
-            <strong>{tag.name}:</strong> <span className="text-white">{tag.value}</span>
-          </div>
-        ))}
+      <div className="border-b border-rule px-4 py-3">
+        <p className="break-all font-mono text-xs leading-relaxed text-phosphor">{processId}</p>
       </div>
-    </motion.div>
+
+      <dl className="px-4 py-3">
+        {tags.length === 0 ? (
+          <span className="t-meta text-faint">No tags</span>
+        ) : (
+          tags.map((tag, index) => (
+            <div key={index} className="flex justify-between gap-3 border-b border-rule py-1.5 last:border-0">
+              <dt className="t-meta shrink-0">{tag.name}</dt>
+              <dd className="truncate font-mono text-xs text-phosphor" title={tag.value}>
+                {tag.value}
+              </dd>
+            </div>
+          ))
+        )}
+      </dl>
+    </motion.article>
   );
 };
 

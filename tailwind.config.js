@@ -13,19 +13,49 @@ export default {
 	],
 	theme: {
     	extend: {
+    		/* Geometry is mechanical: every corner is exactly 90 degrees.
+    		   Any stray `rounded-*` in legacy markup collapses to square. */
     		borderRadius: {
-    			lg: 'var(--radius)',
-    			md: 'calc(var(--radius) - 2px)',
-    			sm: 'calc(var(--radius) - 4px)'
+    			none: '0',
+    			sm: '0',
+    			DEFAULT: '0',
+    			md: '0',
+    			lg: '0',
+    			xl: '0',
+    			'2xl': '0',
+    			'3xl': '0',
+    			full: '0'
     		},
-    		colors: {},
+    		fontFamily: {
+    			mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+    			display: ['Archivo', '"Helvetica Neue"', 'sans-serif'],
+    			sans: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+    		},
+    		colors: {
+    			void: '#0A0A0A',
+    			steel: '#121212',
+    			steel2: '#171717',
+    			rule: '#262626',
+    			rule2: '#3D3D3D',
+    			phosphor: '#EAEAEA',
+    			dim: '#8A8A8A',
+    			faint: '#5A5A5A',
+    			hazard: '#E61919',
+    			hazard2: '#FF2A2A',
+    			signal: '#4AF626'
+    		},
     		animation: {
     			grid: 'grid 15s linear infinite',
     			orbit: 'orbit calc(var(--duration)*1s) linear infinite',
+    			ticker: 'ticker 40s linear infinite',
     			'accordion-down': 'accordion-down 0.2s ease-out',
     			'accordion-up': 'accordion-up 0.2s ease-out'
     		},
     		keyframes: {
+    			ticker: {
+    				from: { transform: 'translateX(0)' },
+    				to: { transform: 'translateX(-50%)' }
+    			},
     			grid: {
     				'0%': {
     					transform: 'translateY(-50%)'

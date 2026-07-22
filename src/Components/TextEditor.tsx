@@ -1,70 +1,52 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Controlled as ControlledEditor } from 'react-codemirror2';
-import 'codemirror/mode/lua/lua'; // Import Lua mode
+import 'codemirror/mode/lua/lua';
 import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/dracula.css';  // Optional: import a theme
+import 'codemirror/theme/dracula.css';
 import ReactGA from 'react-ga4';
-const CodeEditor: React.FC<{ value: string, onChange: (value: string) => void, onAnalyze: () => void }> = ({ value, onChange, onAnalyze }) => {
-    const [language] = useState('lua'); // Only Lua language available
 
-    if (language !== 'lua') {
-        throw new Error('Invalid language');
-    }
-    const handleAnalyze=()=>{
+const CodeEditor: React.FC<{
+    value: string;
+    onChange: (value: string) => void;
+    onAnalyze: () => void;
+}> = ({ value, onChange, onAnalyze }) => {
+    const lineCount = value ? value.split('\n').length : 0;
+
+    const handleAnalyze = () => {
         ReactGA.send({
             hitType: 'event',
             eventCategory: 'Code Analysis',
             eventAction: 'Analyze Button Clicked',
-            eventLabel: 'AuditRequests'
+            eventLabel: 'AuditRequests',
         });
-        
-        // Call the provided onAnalyze function
         onAnalyze();
-    }
+    };
+
     return (
-        <div
-            className="items-center justify-center rounded-xl shadow-md max-w-4xl w-full"
-            style={{
-                background: 'linear-gradient(145deg, #1F1F1F, #141414)', // Outer gradient background
-                padding: '20px',
-                borderRadius: '15px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
-                color: '#d8d8d8'
-            }}
-        >
-            {/* Top section with Lua Code Editor and Analyze button */}
-            <div
-                className="flex justify-between items-center"
-                style={{
-                    background: '#1F1F1F', // Match the top section to outer container's background
-                    color: '#f0f0f0',
-                    borderRadius: '15px 15px 0 0',
-                    padding: '10px 20px',
-                }}
-            >
-                <h2 className="text-xl font-bold">SENTIO ANALYSIS</h2>
-                <button
-                    onClick={handleAnalyze}
-                    className="gradient-button rounded-xl p-1 px-5 text-white font-semibold hover:bg-black"
-                >
-                    Analyze
-                </button>
+        <div className="panel w-full">
+            <div className="panel-head">
+                <div className="flex items-center gap-3">
+                    <span className="t-label">Sentio analysis</span>
+                    <span className="t-meta hidden text-faint sm:inline">/ LUA</span>
+                </div>
+                <div className="flex items-center gap-4">
+                    <span className="t-meta hidden sm:inline">
+                        {String(lineCount).padStart(3, '0')} LN
+                    </span>
+                    <button
+                        onClick={handleAnalyze}
+                        disabled={!value.trim()}
+                        className="btn btn-sm btn-accent"
+                    >
+                        Analyze
+                    </button>
+                </div>
             </div>
 
-            {/* Code editor with synchronized background and color */}
-            <div
-                className="editor no-scroll"
-                style={{
-                    background: 'linear-gradient(145deg, #1F1F1F, #141414)', // Match the background to outer div
-                    border: '1px solid #2c2c2c',
-                    borderRadius: '15px',
-                    color: '#f0f0f0',
-                }}
-            >
+            <div className="editor no-scroll">
                 <ControlledEditor
-                    value={typeof value === 'string' ? value : ''} // Ensure value is a string
-                    onBeforeChange={(editor, data, newValue) => {                
-                        console.log(editor,data)        // Validate that newValue is a string before calling onChange
+                    value={typeof value === 'string' ? value : ''}
+                    onBeforeChange={(_editor, _data, newValue) => {
                         if (typeof newValue === 'string') {
                             onChange(newValue);
                         }
@@ -74,10 +56,17 @@ const CodeEditor: React.FC<{ value: string, onChange: (value: string) => void, o
                         theme: 'dracula',
                         lineNumbers: true,
                         tabSize: 2,
-                        scrollbarStyle: null, // Ensure scrollbar styles are set to null to avoid default scrollbars
+                        scrollbarStyle: null,
                     }}
                     className="editor"
                 />
+            </div>
+
+            <div className="flex items-center justify-between border-t border-rule px-4 py-2">
+                <span className="t-meta">
+                    {value.trim() ? 'Buffer ready' : 'Paste or import Lua source'}
+                </span>
+                <span className="t-meta text-faint">UTF-8 / LF</span>
             </div>
         </div>
     );
