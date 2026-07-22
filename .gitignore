@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 .env
+
+# TypeScript incremental build cache, emitted by `tsc -b`
+*.tsbuildinfo
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

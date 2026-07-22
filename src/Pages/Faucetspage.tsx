@@ -25,9 +25,7 @@ export default function Faucetspage() {
   }, [address])
 
   const getTokenBalance = async () => {
-    // @ts-expect-error - window.arweaveWallet is not typed
     await window.arweaveWallet.connect(["ACCESS_TOKENS"])
-    // @ts-expect-error - window.arweaveWallet is not typed
     const tokens = await window.arweaveWallet.userTokens()
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i].Name === "TEST$SENTI") {
